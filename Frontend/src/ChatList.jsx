@@ -1,22 +1,22 @@
 import { useState, useEffect } from "react";
 
+import api from "./api";
+import ChatCard from "./components/ChatCard";
+
 const ChatList = () => {
   const [chats, setChats] = useState([]);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const fetchData = async () => {
-      const response = await fetch("http://127.0.0.1:8000/api/chats/", {
-				headers: {
-					Authorization: `Bearer ${token}`,
-					"Content-Type": "application/json"
-				}
-			});
-      const data = await response.json();
-      setChats(data);
-    };
+  const fetchChatList = async () => {
+    try {
+      const response = await api.get("/chats/");
+      setChats(response.data);
+    } catch (error) {
+      console.error("Error fetching chat list:", error);
+    }
+  };
 
-    fetchData();
+  useEffect(() => {
+    fetchChatList();
   }, []);
 
   return (
