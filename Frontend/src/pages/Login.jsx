@@ -3,10 +3,8 @@ import { useState } from "react";
 
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import { useUser } from "../context/userContext";
 
 const Login = () => {
-	const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 

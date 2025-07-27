@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import api from "../api";
 import ChatCard from "../components/ChatCard";
 import { useUser } from "../context/userContext";
+import Logout from "../components/buttons/Logout";
 
 const ChatList = () => {
   const { user } = useUser();
@@ -29,17 +30,20 @@ const ChatList = () => {
   };
 
   return (
-    <div className="chat-list">
-      {user && <h2>Welcome, {user.username}!</h2>}
-      <h2>Chat List</h2>
-        {chats.length > 0 ? (
-            chats.map(chat => (
-                <ChatCard key={chat.id} chat={chat} />
-            ))
-        ) : (
-            <p>No chats available</p>
-        )}
-    </div>
+    <>
+      <Logout />
+      <div className="chat-list">
+        {user && <h2>Welcome, {user.username}!</h2>}
+        <h2>Chat List</h2>
+          {chats.length > 0 ? (
+              chats.map(chat => (
+                  <ChatCard key={chat.id} chat={chat} />
+              ))
+          ) : (
+              <p>No chats available</p>
+          )}
+      </div>
+    </>
   );
 }
 
