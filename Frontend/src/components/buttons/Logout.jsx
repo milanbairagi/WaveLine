@@ -1,15 +1,12 @@
 import { useUser } from "../../context/userContext"
 import { useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 
 const Logout = () => {
-    const { setUser } = useUser();
+    const { logoutUser } = useUser();
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem(ACCESS_TOKEN);
-        localStorage.removeItem(REFRESH_TOKEN);
-        setUser(null);
+        logoutUser();
         navigate("/login");
     };
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import { useUser } from "../context/userContext";
 
 const Register = () => {
 	const [username, setUsername] = useState("");
@@ -9,6 +10,7 @@ const Register = () => {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
+	const { loginUser } = useUser();
 
 	const handleRegister = async (event) => {
 		event.preventDefault();
@@ -17,9 +19,10 @@ const Register = () => {
 		try {
 			setLoading(true);
 			const response = await api.post("accounts/register/", userData);
-			console.log("Registration successful:", response.data);
-			localStorage.setItem(ACCESS_TOKEN, response.data.access);
-			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+			
+			// Use the centralized login function
+			await loginUser(response.data);
+			
 			navigate("/");
 		} catch (error) {
 			console.error("Registration failed:", error);

@@ -3,10 +3,12 @@ import { useState } from "react";
 
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import { useUser } from "../context/userContext";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { loginUser } = useUser();
 
 	const handleLogin = async (event) => {
 		event.preventDefault();
@@ -19,9 +21,10 @@ const Login = () => {
 		try {
       setLoading(true);
 			const response = await api.post("/token/", credentials);
-			console.log("Login successful:", response.data);
-			localStorage.setItem(ACCESS_TOKEN, response.data.access);
-			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+			
+			// Use the centralized login function
+			await loginUser(response.data);
+			
       navigate("/");
 		} catch (error) {
 			console.error("Login failed:", error);
