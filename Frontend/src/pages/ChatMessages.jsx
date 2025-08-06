@@ -1,28 +1,41 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import api from "../api"; // Assuming you have an API utility to fetch data
 
 const ChatMessages = () => {
   const { chatId } = useParams();
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  const fetchMessages = async () => {
+    try {
+      const response = await api.get(`/chats/${chatId}/messages`);
+      const data = await response.data;
+      setMessages(data);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      const response = await fetch(`/chats/${chatId}/messages`);
-      const data = await response.json();
-      setMessages(data);
-    };
-
     fetchMessages();
   }, [chatId]);
 
   return (
     <div className="chat-messages">
-      <h2>Chat Messages from Chat: {chatId}</h2>
-      <ul>
-        {messages.map((message) => (
-          <li key={message.id}>{message.content}</li>
-        ))}
-      </ul>
+      {loading ? (
+        <div>Loading messages...</div>
+      ) : (
+        <ul>
+          {messages.map((message) => (
+            <li key={message.id}>
+              {message.content} - {message.sender}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
