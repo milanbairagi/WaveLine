@@ -8,11 +8,26 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from django.contrib.auth import get_user_model
 from django.conf import settings
 
-from chats.models import Chat
+from chats.models import Chat, Message
+from chats.serializers import MessageSerializer
 
 @database_sync_to_async
 def get_user_chat_ids(user):
     return list(Chat.objects.filter(participants=user).values_list('id', flat=True))
+
+@database_sync_to_async
+def create_message(chat_id, user, content):
+    """create a message in the chat"""
+    try:
+        chat = Chat.objects.get(id=chat_id)
+        message = Message.objects.create(chat=chat, sender=user, content=content)
+        # Serialize the message to return
+        serializer = MessageSerializer(message)
+        return serializer.data
+    except Chat.DoesNotExist:
+        raise ValueError("Chat does not exist")
+    except Exception as e:
+        raise ValueError(f"An error occurred while creating the message: {e}")
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -23,6 +38,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     
     async def receive(self, text_data):
         data = json.loads(text_data)
+        print(f"Received Data: {data}")
 
         if data.get("type") == "auth":
             token = data.get("token")
@@ -60,19 +76,27 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 return
             
             chat_id = data.get("chat_id")
-            message = data.get("message")
+            content = data.get("content")
 
+            # Check if the user is part of the chat
             if f"chat_{chat_id}" not in self.joined_chats:
                 await self.send(json.dumps({"type": "error", "detail": "Access denied to chat"}))
                 return
+            
+            # Create message using serializer
+            message_data = await create_message(chat_id, self.user, content)
 
+            # If message creation failed, send an error
+            if not message_data:
+                await self.send(json.dumps({"type": "error", "detail": "Failed to create message"}))
+                return
+            
             # Broadcast the chat message to the group
             await self.channel_layer.group_send(
                 f"chat_{chat_id}",
                 {
-                    "type": "chat.message",
-                    "message": message,
-                    "user": self.user.username
+                    "type": "chat_message",
+                    "message_data": message_data,
                 }
             )
 
@@ -86,12 +110,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.user = None
 
     async def chat_message(self, event):
-        message = event["message"]
-        sender = event["user"]
+        message_data = event["message_data"]
 
         # Send the message to WebSocket
         await self.send(json.dumps({
             "type": "chat_message",
-            "message": message,
-            "sender": sender
+            "message": message_data
         }))
