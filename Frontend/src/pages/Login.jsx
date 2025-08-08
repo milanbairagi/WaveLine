@@ -35,7 +35,6 @@ const Login = () => {
 	return (
 		<div className="login-page">
 			<h2>Login</h2>
-      {loading && <p>Loading...</p>}
 			<form onSubmit={handleLogin}>
 				<div>
 					<label htmlFor="username">Username:</label>
@@ -50,7 +49,7 @@ const Login = () => {
 						required
 					/>
 				</div>
-				<button type="submit">Login</button>
+				<button type="submit">{loading ? "Logging in..." : "Login"}</button>
 			</form>
 		</div>
 	);
