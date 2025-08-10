@@ -1,1 +1,43 @@
-@import "tailwindcss"
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #EAF4FE;
+  --color-primary-100: #D4E9FD;
+  --color-primary-200: #A9D3FA;
+  --color-primary-300: #7EBCF8;
+  --color-primary-400: #529FF3;
+  --color-primary-500: #4A90E2;  // base
+  --color-primary-600: #3A74B5;  // hover
+  --color-primary-700: #2B5888;
+  --color-primary-800: #1D3C5B;
+  --color-primary-900: #0E1F2E;
+
+  --color-secondary-50: #FFF8E1;
+  --color-secondary-100: #FFECB3;
+  --color-secondary-200: #FFD54F;
+  --color-secondary-300: #FFCA28;
+  --color-secondary-400: #FFC107;
+  --color-secondary-500: #E0A800;
+  --color-secondary-600: #B38700;
+  --color-secondary-700: #866600;
+  --color-secondary-800: #594400;
+  --color-secondary-900: #2D2200;
+
+  --color-bubble-sent-50: #F5FBFF;
+  --color-bubble-sent-100: #E3F2FD;
+  --color-bubble-sent-200: #C4E2FA;
+  --color-bubble-sent-300: #A5D2F7;
+  --color-bubble-sent-400: #86C2F4;
+
+  --color-bubble-received-50: #FFFFFF;
+  --color-bubble-received-100: #F9F9F9;
+  --color-bubble-received-200: #F2F2F2;
+
+  --color-neutral-bg-50: #FFFFFF;
+  --color-neutral-bg-100: #F5F5F5;
+  --color-neutral-bg-200: #E0E0E0;
+  --color-neutral-bg-300: #CFCFCF;
+
+  --color-text-primary: #212121;
+  --color-text-secondary: #555555;
+}
