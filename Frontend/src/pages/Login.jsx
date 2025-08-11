@@ -7,6 +7,8 @@ import { IoPersonOutline, IoLockClosedOutline, IoMoonOutline, IoSunnyOutline, Io
 import useToggleTheme from "../hooks/useToggleTheme";
 
 const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { loginUser } = useUser();
@@ -110,6 +112,8 @@ const Login = () => {
                     type="text"
                     id="username"
                     name="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="block w-full pl-12 pr-4 py-3 border border-neutral-bg-300 dark:border-dark-bg-100 rounded-xl bg-neutral-bg-200 dark:bg-dark-bg-200 text-text-primary dark:text-dark-text-primary placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter your username"
                     required
@@ -131,6 +135,8 @@ const Login = () => {
                     type="password"
                     id="password"
                     name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="block w-full pl-12 pr-4 py-3 border border-neutral-bg-300 dark:border-dark-bg-300 rounded-xl bg-neutral-bg-200 dark:bg-dark-bg-200 text-text-primary dark:text-dark-text-primary placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter your password"
                     required
