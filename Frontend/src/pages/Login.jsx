@@ -4,7 +4,6 @@ import { useState } from "react";
 import api from "../api";
 import { useUser } from "../context/userContext";
 import { IoPersonOutline, IoLockClosedOutline, IoChatbubbleEllipsesOutline } from "react-icons/io5";
-import useToggleTheme from "../hooks/useToggleTheme";
 import ThemeToggleButton from "../components/buttons/ThemeToggleButton";
 
 const Login = () => {

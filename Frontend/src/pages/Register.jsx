@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 
 import api from "../api";
 import { useUser } from "../context/userContext";
-import useToggleTheme from "../hooks/useToggleTheme";
 import ThemeToggleButton from "../components/buttons/ThemeToggleButton";
 import { IoPersonOutline, IoLockClosedOutline, IoChatbubbleEllipsesOutline } from "react-icons/io5";
 
