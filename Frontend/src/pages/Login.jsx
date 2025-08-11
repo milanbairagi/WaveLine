@@ -4,33 +4,14 @@ import { useState, useEffect } from "react";
 import api from "../api";
 import { useUser } from "../context/userContext";
 import { IoPersonOutline, IoLockClosedOutline, IoMoonOutline, IoSunnyOutline, IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import useToggleTheme from "../hooks/useToggleTheme";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const navigate = useNavigate();
   const { loginUser } = useUser();
+  const { isDarkMode, toggleTheme } = useToggleTheme();
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (!darkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
 
 	const handleLogin = async (event) => {
 		event.preventDefault();
@@ -59,10 +40,10 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-br from-neutral-bg-100 to-neutral-bg-300 dark:from-dark-bg-50 dark:to-dark-bg-100 flex items-center justify-center p-4">
       {/* Dark Mode Toggle */}
       <button
-        onClick={toggleDarkMode}
+        onClick={toggleTheme}
         className="fixed top-6 right-6 p-3 rounded-full bg-neutral-bg-50 dark:bg-dark-bg-200 shadow-lg hover:shadow-xl transition-all duration-300 border border-neutral-bg-300 dark:border-dark-bg-300 z-10"
       >
-        {darkMode ? (
+        {isDarkMode ? (
           <IoSunnyOutline className="w-5 h-5 text-yellow-500" />
         ) : (
           <IoMoonOutline className="w-5 h-5 text-text-secondary dark:text-dark-text-secondary" />
