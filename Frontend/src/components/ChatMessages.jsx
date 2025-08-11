@@ -5,8 +5,7 @@ import { useUser } from "../context/userContext";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { ACCESS_TOKEN } from "../constants";
 
-const ChatMessages = () => {
-  const { chatId } = useParams();
+const ChatMessages = ({ chatId }) => {
   const [chatMessages, setChatMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);

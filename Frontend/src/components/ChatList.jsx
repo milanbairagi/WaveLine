@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 
 import api from "../api";
-import ChatCard from "../components/ChatCard";
+import ChatCard from "./ChatCard";
 import { useUser } from "../context/userContext";
-import Logout from "../components/buttons/Logout";
+import Logout from "./buttons/Logout";
 
 const ChatList = () => {
   const { user } = useUser();
