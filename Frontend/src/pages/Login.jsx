@@ -1,10 +1,11 @@
 import { useNavigate, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import api from "../api";
 import { useUser } from "../context/userContext";
-import { IoPersonOutline, IoLockClosedOutline, IoMoonOutline, IoSunnyOutline, IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import { IoPersonOutline, IoLockClosedOutline, IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import useToggleTheme from "../hooks/useToggleTheme";
+import ThemeToggleButton from "../components/buttons/ThemeToggleButton";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -12,8 +13,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { loginUser } = useUser();
-  const { isDarkMode, toggleTheme } = useToggleTheme();
-
 
 	const handleLogin = async (event) => {
 		event.preventDefault();
@@ -41,16 +40,7 @@ const Login = () => {
 	return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-bg-100 to-neutral-bg-300 dark:from-dark-bg-50 dark:to-dark-bg-100 flex items-center justify-center p-4">
       {/* Dark Mode Toggle */}
-      <button
-        onClick={toggleTheme}
-        className="fixed top-6 right-6 p-3 rounded-full bg-neutral-bg-50 dark:bg-dark-bg-200 shadow-lg hover:shadow-xl transition-all duration-300 border border-neutral-bg-300 dark:border-dark-bg-300 z-10"
-      >
-        {isDarkMode ? (
-          <IoSunnyOutline className="w-5 h-5 text-yellow-500" />
-        ) : (
-          <IoMoonOutline className="w-5 h-5 text-text-secondary dark:text-dark-text-secondary" />
-        )}
-      </button>
+      <ThemeToggleButton /> 
 
       <div className="w-full max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-0 bg-neutral-bg-100 dark:bg-dark-bg-100 rounded-2xl shadow-2xl overflow-hidden border border-neutral-bg-300 dark:border-dark-bg-300">
