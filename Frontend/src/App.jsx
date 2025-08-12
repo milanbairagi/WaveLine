@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import ChatList from "./pages/ChatList";
-import ChatMessages from "./pages/ChatMessages";
+import MainLayout from "./pages/MainLayout";
+import ChatMessages from "./components/ChatMessages";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { UserProvider } from "./context/userContext";
@@ -21,11 +21,11 @@ let router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <ChatList />
+        element: <MainLayout />
       },
       {
         path: "/chat/:chatId",
-        element: <ChatMessages />
+        element: <MainLayout />
       }
     ]
   }
