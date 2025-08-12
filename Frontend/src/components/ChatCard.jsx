@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/userContext";
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 
 
 const ChatCard = ({ chat }) => {
@@ -10,14 +11,35 @@ const ChatCard = ({ chat }) => {
     navigate(`/chat/${chat.id}`);
   }
 
+  const otherParticipant = chat.participants_detail[0].id === user.id
+    ? chat.participants_detail[1]
+    : chat.participants_detail[0];
+
 	return (
-		<div className="chat-card" style={{ border: "1px solid #ccc", padding: "10px", margin: "10px" }} onClick={handleChatClick}>
-			<h3>
-				{chat.participants_detail[0].id === user.id
-					? chat.participants_detail[1].username
-					: chat.participants_detail[0].username}
-			</h3>
-		</div>
+		<div 
+      className="bg-neutral-bg-100 dark:bg-dark-bg-100 border border-neutral-bg-300 dark:border-dark-bg-300 rounded-xl p-4 mb-3 cursor-pointer transition-all duration-200 hover:bg-neutral-bg-200 dark:hover:bg-dark-bg-200 hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-500 group" 
+      onClick={handleChatClick}
+    >
+      <div className="flex items-center space-x-4">
+        {/* Avatar */}
+        <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md">
+          {otherParticipant.username.charAt(0).toUpperCase()}
+        </div>
+        
+        {/* Chat Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-text-primary dark:text-dark-text-primary truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
+              {otherParticipant.username}
+            </h3>
+            <IoChatbubbleEllipsesOutline className="w-5 h-5 text-text-tertiary dark:text-dark-text-tertiary group-hover:text-primary-500 transition-colors duration-200" />
+          </div>
+          <p className="text-sm text-text-secondary dark:text-dark-text-secondary mt-1">
+            Chat with {otherParticipant.username}
+          </p>
+        </div>
+      </div>
+    </div>
 	);
 };
 

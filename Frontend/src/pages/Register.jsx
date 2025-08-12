@@ -36,7 +36,9 @@ const Register = () => {
 	return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-bg-100 to-neutral-bg-300 dark:from-dark-bg-50 dark:to-dark-bg-100 flex items-center justify-center p-4">
       {/* Dark Mode Toggle */}
-    <ThemeToggleButton />
+      <div className="fixed top-6 right-6">
+        <ThemeToggleButton />
+      </div>
 
       <div className="w-full max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-0 bg-neutral-bg-100 dark:bg-dark-bg-100 rounded-2xl shadow-2xl overflow-hidden border border-neutral-bg-300 dark:border-dark-bg-300">

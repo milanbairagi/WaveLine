@@ -7,7 +7,7 @@ const ThemeToggleButton = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="fixed top-6 right-6 p-3 rounded-full bg-neutral-bg-50 dark:bg-dark-bg-200 shadow-lg hover:shadow-xl transition-all duration-300 border border-neutral-bg-300 dark:border-dark-bg-300 z-10"
+      className="p-3 rounded-full bg-neutral-bg-50 dark:bg-dark-bg-200 shadow-lg hover:shadow-xl transition-all duration-300 border border-neutral-bg-300 dark:border-dark-bg-300 z-10"
     >
       {isDarkMode ? (
         <IoSunnyOutline className="w-5 h-5 text-yellow-500" />
