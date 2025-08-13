@@ -20,7 +20,7 @@ const Register = () => {
 
 		try {
 			setLoading(true);
-			const response = await api.post("accounts/register/", userData);
+			const response = await api.post("accounts/", userData);
 			
 			// Use the centralized login function
 			await loginUser(response.data);

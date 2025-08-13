@@ -12,7 +12,7 @@ export const UserProvider = ({ children }) => {
 	const fetchUser = async () => {
 		try {
 			setLoading(true);
-			const response = await api.get("/accounts/user/");
+			const response = await api.get("/accounts/me/");
 			setUser(response.data);
 		} catch (error) {
 			console.error("Error fetching user:", error);
