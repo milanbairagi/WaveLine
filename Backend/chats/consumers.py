@@ -38,7 +38,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     
     async def receive(self, text_data):
         data = json.loads(text_data)
-        print(f"Received Data: {data}")
 
         if data.get("type") == "auth":
             token = data.get("token")
