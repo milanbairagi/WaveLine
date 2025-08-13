@@ -29,7 +29,7 @@ export const UserProvider = ({ children }) => {
 			localStorage.setItem(REFRESH_TOKEN, tokens.refresh);
 			
 			// Fetch and set user data
-			const userResponse = await api.get("/accounts/user/");
+			const userResponse = await api.get("/accounts/me/");
 			setUser(userResponse.data);
 			
 			return userResponse.data;
