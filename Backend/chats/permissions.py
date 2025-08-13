@@ -5,7 +5,8 @@ class IsParticipationOfChat(BasePermission):
 
     def has_permission(self, request, view):
         user = request.user
-        chat_id = view.kwargs.get("chat_id")
+        # Handle both 'chat_id' and 'pk' URL parameters
+        chat_id = view.kwargs.get("chat_id") or view.kwargs.get("pk")
         if not chat_id:
             raise ValidationError({"chat_id": "This field is required!"})
         
