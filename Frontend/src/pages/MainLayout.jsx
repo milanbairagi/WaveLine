@@ -1,15 +1,91 @@
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 import ChatList from "../components/ChatList";
 import ChatMessages from "../components/ChatMessages";
 import { useUser } from "../context/userContext";
 import Logout from "../components/buttons/Logout";
+import NewChatButton from "../components/buttons/NewChatButton";
+import SearchListDropDown from "../components/SearchListDropDown";
 import ThemeToggleButton from "../components/buttons/ThemeToggleButton";
-import { IoChatbubbleEllipsesOutline, IoPersonOutline, IoAddOutline } from "react-icons/io5";
+import api from "../api";
+import { IoChatbubbleEllipsesOutline, IoPersonOutline } from "react-icons/io5";
 
 const MainLayout = () => {
   const { chatId } = useParams();
   const { user } = useUser();
+
+  const navigate = useNavigate();
+
+  // Chats Lists
+  const [chats, setChats] = useState([]);
+  const [loadingChats, setLoadingChats] = useState(true);
+
+  // Chats dropdown when clicking on New Chat button
+  const [searchDropDownOn, setSearchDropDownOn] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchedUser, setSearchedUser] = useState([]);
+
+  // Get user IDs from all chats
+  const userIdsInChats = chats.flatMap((chat) =>
+		chat.participants_detail.map((participant) => participant.id)
+  );
+
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        const response = await api.get("/chats/");
+        const data = response.data;
+        setChats(data);
+      } catch (error) {
+        console.error("Error fetching chats:", error);
+      } finally {
+        setLoadingChats(false);
+      }
+    };
+
+    fetchChats();
+  }, []);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setSearchedUser([]);
+      return;
+    }
+
+    const fetchUsers = async () => {
+      // Fetch users based on search term
+      const response = await api.get(`/accounts/?search=${searchTerm}`);
+      const data = response.data.filter(user => !userIdsInChats.includes(user.id));
+      setSearchedUser(data);
+    };
+
+    fetchUsers();
+  }, [searchTerm]);
+
+  const updateSearchTerm = (term) => {
+    setSearchTerm(term);
+  };
+
+  // handle user selection in searched users card
+  const handleSelectUser = async (user_id) => {
+    /* Create a new chat with the selected user */
+    const data = {participants: user_id};
+    try {
+      const response = await api.post('chats/', data);
+      setChats(prev => [...prev, response.data]);
+
+      setSearchDropDownOn(false);
+      navigate(`/chat/${response.data.id}`);
+
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        console.warn("Chat may already exist or invalid request:", error.response.data);
+      } else {
+        console.error("Error creating chat:", error.message || error);
+      }
+    }
+  };
 
   return (
     <div className="h-screen bg-gradient-to-br from-neutral-bg-100 to-neutral-bg-300 dark:from-dark-bg-50 dark:to-dark-bg-100 flex flex-col">
@@ -32,11 +108,13 @@ const MainLayout = () => {
             </div>
             
             {/* Actions */}
-            <div className="flex items-center space-x-3">
-              <button className="flex items-center space-x-2 bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200 hover:shadow-lg transform hover:scale-[1.02]">
-                <IoAddOutline className="w-5 h-5" />
-                <span className="hidden sm:inline">New Chat</span>
-              </button>
+            <div className="relative flex items-center space-x-3">
+              {searchDropDownOn && (
+                <div className="absolute right-4 top-16 w-64 bg-white dark:bg-dark-bg-200 rounded-lg shadow-lg p-4 z-20">
+                  <SearchListDropDown users={searchedUser} updateSearchTerm={updateSearchTerm} handleClick={handleSelectUser} />
+                </div>
+              )}
+              <NewChatButton handleClick={() => setSearchDropDownOn(!searchDropDownOn)} />
               <Logout />
               <ThemeToggleButton />
             </div>
@@ -56,7 +134,7 @@ const MainLayout = () => {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <aside className="w-80 border-r border-neutral-bg-300 dark:border-dark-bg-300 bg-neutral-bg-50 dark:bg-dark-bg-100 overflow-y-auto">
-          <ChatList />
+          <ChatList chats={chats} loading={loadingChats} />
         </aside>
         
         {/* Chat Area */}

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import api from "../api";
 import { useUser } from "../context/userContext";
@@ -17,6 +17,8 @@ const ChatMessages = ({ chatId }) => {
   const [chatInfo, setChatInfo] = useState(null);
   const messagesEndRef = useRef(null);
   const { user } = useUser();
+
+  const navigate = useNavigate();
   
   const {
     connect,
@@ -70,6 +72,9 @@ const ChatMessages = ({ chatId }) => {
       setChatMessages(data);
     } catch (error) {
       console.error("Error fetching messages:", error);
+      if (error.response?.status === 400) {
+        navigate("/");
+      }
     } finally {
       setLoading(false);
     }
@@ -80,13 +85,16 @@ const ChatMessages = ({ chatId }) => {
       const response = await api.get(`/chats/${chatId}/`);
       setChatInfo(response.data);
     } catch (error) {
-      console.error("Error fetching chat info:", error);
+      // TODO: Show error message to user
+      if (error.response?.status === 400 || error.response?.status === 403 || error.response?.status === 404) {
+        navigate("/");
+      }
     }
   };
 
   useEffect(() => {
-    fetchMessages();
     fetchChatInfo();
+    fetchMessages();
   }, [chatId]);
 
   if (!user) {
