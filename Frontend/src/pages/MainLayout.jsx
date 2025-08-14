@@ -96,7 +96,7 @@ const MainLayout = () => {
           <div className="flex items-center justify-between">
             {/* Brand & Welcome */}
             <div className="flex items-center space-x-4">
-              <div className="flex items-center">
+              <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
                 <IoChatbubbleEllipsesOutline className="w-8 h-8 text-primary-500 mr-3" />
                 <h1 className="text-2xl font-bold text-text-primary dark:text-dark-text-primary">WaveLine</h1>
               </div>
@@ -124,7 +124,8 @@ const MainLayout = () => {
           </div>
           
           {/* Mobile Welcome */}
-          {user && (
+          {/* View only on ChatList Page */}
+          {(user && !chatId) && (
             <div className="sm:hidden mt-4 flex items-center space-x-2 text-text-secondary dark:text-dark-text-secondary">
               <IoPersonOutline className="w-5 h-5" />
               <span>Welcome, {user.username}!</span>
@@ -136,12 +137,12 @@ const MainLayout = () => {
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-80 border-r border-neutral-bg-300 dark:border-dark-bg-300 bg-neutral-bg-50 dark:bg-dark-bg-100 overflow-y-auto">
-          <ChatList chats={chats} loading={loadingChats} />
-        </aside>
-        
-        {/* Chat Area */}
-        <main className="flex-1 flex flex-col bg-neutral-bg-200 dark:bg-dark-bg-200">
+          <aside className={`w-full sm:w-80 ${chatId ? 'hidden sm:block' : 'block'} border-r border-neutral-bg-300 dark:border-dark-bg-300 bg-neutral-bg-50 dark:bg-dark-bg-100 overflow-y-auto`}>
+            <ChatList chats={chats} loading={loadingChats} />
+          </aside>
+          
+          {/* Chat Area */}
+        <main className={`${chatId ? "flex" : "hidden"} sm:flex flex-1 flex-col bg-neutral-bg-200 dark:bg-dark-bg-200`}>
           {!chatId ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
