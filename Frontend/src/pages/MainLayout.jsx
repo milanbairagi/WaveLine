@@ -8,6 +8,7 @@ import Logout from "../components/buttons/Logout";
 import NewChatButton from "../components/buttons/NewChatButton";
 import SearchListDropDown from "../components/SearchListDropDown";
 import ThemeToggleButton from "../components/buttons/ThemeToggleButton";
+import ClickAwayListener from "../components/common/ClickAwayListener";
 import api from "../api";
 import { IoChatbubbleEllipsesOutline, IoPersonOutline } from "react-icons/io5";
 
@@ -110,9 +111,11 @@ const MainLayout = () => {
             {/* Actions */}
             <div className="relative flex items-center space-x-3">
               {searchDropDownOn && (
-                <div className="absolute right-4 top-16 w-64 bg-white dark:bg-dark-bg-200 rounded-lg shadow-lg p-4 z-20">
-                  <SearchListDropDown users={searchedUser} updateSearchTerm={updateSearchTerm} handleClick={handleSelectUser} />
-                </div>
+                <ClickAwayListener onClickAway={() => setSearchDropDownOn(false)}>
+                  <div className="absolute right-4 top-16">
+                    <SearchListDropDown users={searchedUser} updateSearchTerm={updateSearchTerm} handleClick={handleSelectUser} />
+                  </div>
+                </ClickAwayListener>
               )}
               <NewChatButton handleClick={() => setSearchDropDownOn(!searchDropDownOn)} />
               <Logout />

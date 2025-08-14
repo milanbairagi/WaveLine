@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/userContext";
+import Avatar from "./Avatar";
 import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 
 
@@ -22,10 +23,8 @@ const ChatCard = ({ chat }) => {
     >
       <div className="flex items-center space-x-4">
         {/* Avatar */}
-        <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md">
-          {otherParticipant.username.charAt(0).toUpperCase()}
-        </div>
-        
+        <Avatar name={otherParticipant?.username} style={"w-12 h-12"} />
+
         {/* Chat Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">

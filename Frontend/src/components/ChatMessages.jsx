@@ -5,6 +5,7 @@ import { useUser } from "../context/userContext";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { ACCESS_TOKEN } from "../constants";
 import ChatMessage from "./ChatMessage";
+import Avatar from "./Avatar";
 import { 
   IoSendOutline, 
   IoChatbubbleEllipsesOutline
@@ -126,9 +127,7 @@ const ChatMessages = ({ chatId }) => {
       <div className="bg-neutral-bg-50 dark:bg-dark-bg-100 border-b border-neutral-bg-300 dark:border-dark-bg-300 px-4 py-4">
         <div className="flex items-center space-x-3">
           {/* Avatar */}
-          <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold">
-            {otherParticipant?.username?.charAt(0)?.toUpperCase() || 'C'}
-          </div>
+          <Avatar name={otherParticipant?.username} />
           
           <div className="min-w-0 flex-1">
             <h1 className="text-lg font-semibold text-text-primary dark:text-dark-text-primary truncate">
