@@ -12,7 +12,7 @@ export const UserProvider = ({ children }) => {
 	const fetchUser = async () => {
 		try {
 			setLoading(true);
-			const response = await api.get("/accounts/user/");
+			const response = await api.get("/accounts/me/");
 			setUser(response.data);
 		} catch (error) {
 			console.error("Error fetching user:", error);
@@ -29,7 +29,7 @@ export const UserProvider = ({ children }) => {
 			localStorage.setItem(REFRESH_TOKEN, tokens.refresh);
 			
 			// Fetch and set user data
-			const userResponse = await api.get("/accounts/user/");
+			const userResponse = await api.get("/accounts/me/");
 			setUser(userResponse.data);
 			
 			return userResponse.data;

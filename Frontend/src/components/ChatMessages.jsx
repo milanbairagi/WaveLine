@@ -1,10 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import api from "../api";
 import { useUser } from "../context/userContext";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { ACCESS_TOKEN } from "../constants";
 import ChatMessage from "./ChatMessage";
+import Avatar from "./Avatar";
 import { 
   IoSendOutline, 
   IoChatbubbleEllipsesOutline
@@ -17,6 +18,8 @@ const ChatMessages = ({ chatId }) => {
   const [chatInfo, setChatInfo] = useState(null);
   const messagesEndRef = useRef(null);
   const { user } = useUser();
+
+  const navigate = useNavigate();
   
   const {
     connect,
@@ -70,6 +73,9 @@ const ChatMessages = ({ chatId }) => {
       setChatMessages(data);
     } catch (error) {
       console.error("Error fetching messages:", error);
+      if (error.response?.status === 400) {
+        navigate("/");
+      }
     } finally {
       setLoading(false);
     }
@@ -80,13 +86,16 @@ const ChatMessages = ({ chatId }) => {
       const response = await api.get(`/chats/${chatId}/`);
       setChatInfo(response.data);
     } catch (error) {
-      console.error("Error fetching chat info:", error);
+      // TODO: Show error message to user
+      if (error.response?.status === 400 || error.response?.status === 403 || error.response?.status === 404) {
+        navigate("/");
+      }
     }
   };
 
   useEffect(() => {
-    fetchMessages();
     fetchChatInfo();
+    fetchMessages();
   }, [chatId]);
 
   if (!user) {
@@ -118,9 +127,7 @@ const ChatMessages = ({ chatId }) => {
       <div className="bg-neutral-bg-50 dark:bg-dark-bg-100 border-b border-neutral-bg-300 dark:border-dark-bg-300 px-4 py-4">
         <div className="flex items-center space-x-3">
           {/* Avatar */}
-          <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold">
-            {otherParticipant?.username?.charAt(0)?.toUpperCase() || 'C'}
-          </div>
+          <Avatar name={otherParticipant?.username} />
           
           <div className="min-w-0 flex-1">
             <h1 className="text-lg font-semibold text-text-primary dark:text-dark-text-primary truncate">

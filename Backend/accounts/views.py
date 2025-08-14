@@ -1,4 +1,4 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, filters
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -7,10 +7,16 @@ from .serializers import UserSerializer
 from .models import User
 
 
-class CreateUserView(generics.CreateAPIView):
+class ListCreateUserView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny,]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["username"]
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [AllowAny(),]
+        return [IsAuthenticated(),]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -24,7 +30,7 @@ class CreateUserView(generics.CreateAPIView):
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class RetrieveUserView(generics.RetrieveAPIView):
+class RetrieveCurrentUserView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated,]

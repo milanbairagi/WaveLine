@@ -1,30 +1,8 @@
-import { useState, useEffect } from "react";
-
-import api from "../api";
 import ChatCard from "./ChatCard";
-import { useUser } from "../context/userContext";
 import { IoChatbubbleEllipsesOutline, IoAddOutline } from "react-icons/io5";
 
 
-const ChatList = () => {
-  const { user } = useUser();
-  const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchChatList = async () => {
-    try {
-      const response = await api.get("/chats/");
-      setChats(response.data);
-    } catch (error) {
-      console.error("Error fetching chat list:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchChatList();
-  }, []);
+const ChatList = ({chats, loading}) => {
 
   if (loading) {
     return (

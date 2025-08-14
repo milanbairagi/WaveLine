@@ -15,7 +15,7 @@ export const useWebSocket = (url) => {
     socketRef.current = ws;
 
     ws.onopen = () => {
-      console.log("WebSocket connection established");
+      // console.log("WebSocket connection established");
       setIsConnected(true);
       setSocket(ws);
 
@@ -29,7 +29,6 @@ export const useWebSocket = (url) => {
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Received:", data);
 
       if (data.type == "chat_message") {
         setMessages(prev => [
@@ -37,21 +36,22 @@ export const useWebSocket = (url) => {
           data.message
         ])
       } else if (data.type === "error") {
-        console.error("WebSocket error:", data);
+        disconnect();
       } else if (data.type === "authenticated") {
-        console.log("User authenticated successfully");
+        // console.log("User authenticated successfully");
+        
       }
     };
 
     ws.onclose = () => {
-      console.log("WebSocket connection closed");
+      // console.log("WebSocket connection closed");
       setIsConnected(false);
       setSocket(null);
     };
 
 
     ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
+      // console.error("WebSocket error:", error);
       setIsConnected(false);
       setSocket(null);
     };
