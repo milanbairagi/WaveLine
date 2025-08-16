@@ -20,6 +20,13 @@ const Login = () => {
 			await loginUser(response.data);
 			navigate("/");
 		} catch (error) {
+      console.log("ERROR: ", error);
+      
+      if (error.code && error.code === "ERR_NETWORK") {
+        setError("root", { message: "Network error, please try again later." });
+      }
+
+      // Handle errors from the API
       if (error.response && error.response.data) {
         const data = error.response.data;
 
@@ -123,7 +130,7 @@ const Login = () => {
 										{...register("username", {
 											required: "Username is required",
 										})}
-										className="block w-full pl-12 pr-4 py-3 border border-neutral-bg-300 dark:border-dark-bg-100 rounded-xl bg-neutral-bg-200 dark:bg-dark-bg-200 text-text-primary dark:text-dark-text-primary placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+										className={`block w-full pl-12 pr-4 py-3 border border-neutral-bg-300 dark:border-dark-bg-300 rounded-xl bg-neutral-bg-200 dark:bg-dark-bg-200 text-text-primary dark:text-dark-text-primary placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${errors.username ? "border-red-500 dark:border-red-400" : ""}`}
 										placeholder="Enter your username"
 									/>
 								</div>
@@ -151,7 +158,7 @@ const Login = () => {
 										{...register("password", {
 											required: "Password is required",
 										})}
-										className="block w-full pl-12 pr-4 py-3 border border-neutral-bg-300 dark:border-dark-bg-300 rounded-xl bg-neutral-bg-200 dark:bg-dark-bg-200 text-text-primary dark:text-dark-text-primary placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+										className={`block w-full pl-12 pr-4 py-3 border border-neutral-bg-300 dark:border-dark-bg-300 rounded-xl bg-neutral-bg-200 dark:bg-dark-bg-200 text-text-primary dark:text-dark-text-primary placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${errors.password ? "border-red-500 dark:border-red-400" : ""}`}
 										placeholder="Enter your password"
 									/>
 								</div>
@@ -159,6 +166,9 @@ const Login = () => {
                   <FieldError msg={errors.password.message} />
                 )}
 							</div>
+              {errors.root && (
+                <FieldError msg={errors.root.message} />
+              )}
 
 							{/* Submit Button */}
 							<button
