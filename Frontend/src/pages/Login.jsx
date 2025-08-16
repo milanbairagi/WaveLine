@@ -15,10 +15,9 @@ const Login = () => {
 
 	const handleLogin = async (event) => {
 		event.preventDefault();
-		const formData = new FormData(event.target);
 		const credentials = {
-			username: formData.get("username"),
-			password: formData.get("password"),
+			username,
+			password,
 		};
 
 		try {
