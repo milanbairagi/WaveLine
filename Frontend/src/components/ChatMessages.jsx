@@ -20,6 +20,8 @@ const ChatMessages = ({ chatId }) => {
   const { user } = useUser();
 
   const navigate = useNavigate();
+
+  const socketURL = import.meta.env.VITE_SOCKET_URL;
   
   const {
     connect,
@@ -28,7 +30,7 @@ const ChatMessages = ({ chatId }) => {
     isConnected,
     messages,
     setMessages
-  } = useWebSocket(`ws://localhost:8000/ws/chats/${chatId}/message/`);
+} = useWebSocket(`${socketURL}/chats/${chatId}/message/`);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
