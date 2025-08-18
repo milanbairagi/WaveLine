@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 
 from decouple import config, Csv
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -107,6 +108,12 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Production Database
+if config("PRODUCTION", default=True, cast=bool):
+    DATABASE_URL = config("DATABASE_URL")
+    DATABASES['default'] = dj_database_url.config(default=DATABASE_URL)
+
 
 
 # Password validation
