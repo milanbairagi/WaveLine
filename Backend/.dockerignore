@@ -1,0 +1,26 @@
+# Python/Django
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+
+# Env and secrets
+.env
+.env.*
+
+# Virtual Environment
+venv/
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Git
+.git/
+.gitignore
+
+# Node stuff (if any)
+node_modules/
