@@ -88,13 +88,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
 
+# Redis configuration
+REDIS_URL = config("REDIS_URL", default=None)
+if REDIS_URL:
+    REDIS_CONFIG = {"hosts": [REDIS_URL]}
+else:
+    REDIS_CONFIG = {
+        "hosts": [(
+            config("REDIS_HOST", default="127.0.0.1"),
+            config("REDIS_PORT", default=6379, cast=int)
+        )]
+    }
+
 CHANNEL_LAYERS = {
     "default": {
-        # TODO: Uncomment and configure Redis for production
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [(config("REDIS_HOST", default="127.0.0.1"), config("REDIS_PORT", default=6379, cast=int))],
-        },
+        "CONFIG": REDIS_CONFIG,
     },
 }
 
