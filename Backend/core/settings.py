@@ -34,6 +34,7 @@ if config("PRODUCTION", default=True, cast=bool):
     ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1", cast=Csv())
     CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="", cast=Csv())
 else:
+    ALLOWED_HOSTS = ["*"]
     CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
