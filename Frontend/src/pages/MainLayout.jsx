@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import ChatList from "../components/ChatList";
@@ -26,6 +26,9 @@ const MainLayout = () => {
   const [searchDropDownOn, setSearchDropDownOn] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedUser, setSearchedUser] = useState([]);
+
+  // Add chat button refs
+  const newChatButtonRefs = [useRef(), useRef()];
 
   // Get user IDs from all chats
   const userIdsInChats = chats.flatMap((chat) =>
@@ -66,6 +69,14 @@ const MainLayout = () => {
 
   const updateSearchTerm = (term) => {
     setSearchTerm(term);
+  };
+
+  const handleAddChatToggle = () => { 
+    if (searchDropDownOn === true) {
+      setSearchDropDownOn(false);
+      return;
+    }
+    setSearchDropDownOn(true);
   };
 
   // handle user selection in searched users card
@@ -111,13 +122,13 @@ const MainLayout = () => {
             {/* Actions */}
             <div className="relative flex items-center space-x-3">
               {searchDropDownOn && (
-                <ClickAwayListener onClickAway={() => setSearchDropDownOn(false)}>
+                <ClickAwayListener onClickAway={() => setSearchDropDownOn(false)} ignoreRefs={newChatButtonRefs}>
                   <div className="absolute right-4 top-16">
                     <SearchListDropDown users={searchedUser} updateSearchTerm={updateSearchTerm} handleClick={handleSelectUser} />
                   </div>
                 </ClickAwayListener>
               )}
-              <NewChatButton handleClick={() => setSearchDropDownOn(!searchDropDownOn)} />
+              <NewChatButton handleClick={handleAddChatToggle} newChatButtonRefs={newChatButtonRefs} />
               <Logout />
               <ThemeToggleButton />
             </div>
@@ -138,7 +149,7 @@ const MainLayout = () => {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
           <aside className={`w-full sm:w-80 ${chatId ? 'hidden sm:block' : 'block'} border-r border-neutral-bg-300 dark:border-dark-bg-300 bg-neutral-bg-50 dark:bg-dark-bg-100 overflow-y-auto`}>
-            <ChatList chats={chats} loading={loadingChats} />
+            <ChatList chats={chats} loading={loadingChats} handleAddChat={handleAddChatToggle} newChatButtonRefs={newChatButtonRefs} />
           </aside>
           
           {/* Chat Area */}

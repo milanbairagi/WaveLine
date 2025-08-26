@@ -2,7 +2,7 @@ import ChatCard from "./ChatCard";
 import { IoChatbubbleEllipsesOutline, IoAddOutline } from "react-icons/io5";
 
 
-const ChatList = ({chats, loading}) => {
+const ChatList = ({chats, loading, handleAddChat, newChatButtonRefs}) => {
 
   if (loading) {
     return (
@@ -47,8 +47,12 @@ const ChatList = ({chats, loading}) => {
             <p className="text-text-secondary dark:text-dark-text-secondary text-sm mb-4 px-4">
               Start your first conversation to see it here.
             </p>
-            <button className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200 hover:shadow-lg transform hover:scale-[1.02] flex items-center space-x-2 mx-auto text-sm">
-              <IoAddOutline className="w-4 h-4" />
+            <button 
+              className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200 hover:shadow-lg transform hover:scale-[1.02] flex items-center space-x-2 mx-auto text-sm"
+              onClick={handleAddChat}
+              ref={newChatButtonRefs[1]}
+            >
+              <IoAddOutline className="w-4 h-4"/>
               <span>Start Chat</span>
             </button>
           </div>

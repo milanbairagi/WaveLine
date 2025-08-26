@@ -7,6 +7,7 @@ const SearchListDropDown = ({ users, updateSearchTerm, handleClick }) => {
 				type="text"
 				placeholder="Search..."
 				onChange={(e) => updateSearchTerm(e.target.value)}
+        autoFocus
         className="w-full px-3 py-2 border border-neutral-bg-400 dark:border-dark-bg-300 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
 			/>
 			<ul>

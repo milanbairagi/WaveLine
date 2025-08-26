@@ -1,11 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 
-const ClickAwayListener = ({children, onClickAway}) => {
+const ClickAwayListener = ({children, onClickAway, ignoreRefs=[]}) => {
   const ref = useRef();
 
   useEffect(() => {
     const handleClick = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
+      if (
+			ref.current &&
+			!ref.current.contains(event.target) &&
+			!ignoreRefs.some(
+				(r) => r.current && r.current.contains(event.target)
+			)
+      ) {
+        console.log("Closed");
         onClickAway();
       }
     };
