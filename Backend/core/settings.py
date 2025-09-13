@@ -111,6 +111,7 @@ CHANNEL_LAYERS = {
 # Development Channel Layer
 if not config("PRODUCTION", default=True, cast=bool):
     CHANNEL_LAYERS["default"]["BACKEND"] = "channels.layers.InMemoryChannelLayer"
+    CHANNEL_LAYERS["default"].pop("CONFIG", None)
 
 
 # Database
