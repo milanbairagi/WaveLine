@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 from .models import Chat, Message
 from .serializers import ChatSerializer, MessageSerializer
 from .permissions import IsParticipationOfChat
+from .pagination import MessageCursorPagination
 
 
 class ChatListCreate(generics.ListCreateAPIView):
@@ -24,10 +25,11 @@ class ChatDetail(generics.RetrieveUpdateDestroyAPIView):
 class ChatMessageView(generics.ListCreateAPIView):
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated, IsParticipationOfChat]
+    pagination_class = MessageCursorPagination
 
     def get_queryset(self):
         chat_id = self.kwargs.get("chat_id")
-        messages = Message.objects.filter(chat__id=chat_id)
+        messages = Message.objects.filter(chat__id=chat_id).order_by("-timestamp", "-pk")
         return messages
     
     def perform_create(self, serializer):
