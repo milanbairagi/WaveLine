@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef, useLayoutEffect } from "react";
+import { useEffect, useState, useRef, useLayoutEffect, useCallback } from "react";
 import api from "../api";
 import { useUser } from "../context/userContext";
 import { useWebSocket } from "../hooks/useWebSocket";
@@ -16,6 +16,7 @@ const ChatMessages = ({ chatId }) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [chatInfo, setChatInfo] = useState(null);
+  const messagesStartRef = useRef(null);
   const messagesEndRef = useRef(null);
   const { user } = useUser();
 
@@ -24,9 +25,9 @@ const ChatMessages = ({ chatId }) => {
   const nextPageURL = useRef(null);
   
   const messagesContainerRef = useRef(null);
-  const scrollAdjustmentRef = useRef(null); // To store previous scroll value {position, height}
+  const scrollAdjustmentRef = useRef({ previousScrollTop: 0, previousScrollHeight: 0 }); // To store previous scroll value {previousPosition, previousHeight}
 
-  const shouldScrollToBottom = useRef(true);  // To track if we should auto-scroll to bottom
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);  // To track if we should auto-scroll to bottom
   
   const navigate = useNavigate();
   
@@ -41,30 +42,56 @@ const ChatMessages = ({ chatId }) => {
     setMessages
   } = useWebSocket(`${socketURL}/chats/${chatId}/message/`);
 
+  useEffect(() => {
+    if (loading) return; // Don't set up observer while loading
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isLoadingMore) {
+          loadMoreMessages();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (messagesStartRef.current) {
+      observer.observe(messagesStartRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    }
+  }, [loading, chatMessages, isLoadingMore]);
+
+  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Handle scroll adjustment after DOM updates
-  useLayoutEffect(() => {
-    if (scrollAdjustmentRef.current && messagesContainerRef.current) {
+  const scrollToPreviousPosition = useCallback(() => {
+    if (scrollAdjustmentRef.current && messagesContainerRef.current && !shouldScrollToBottom) {
       const { previousScrollTop, previousScrollHeight } = scrollAdjustmentRef.current;
       const container = messagesContainerRef.current;
       const newScrollHeight = container.scrollHeight;
       const heightDiff = newScrollHeight - previousScrollHeight;
       container.scrollTop = previousScrollTop + heightDiff;
       scrollAdjustmentRef.current = null; // Reset after adjustment
+
+      setShouldScrollToBottom(true); // Reset for next time
     }
-  }, [chatMessages]);
+  }, [scrollAdjustmentRef, chatMessages])
 
   // Only scroll to bottom if not loading more messages (i.e., on initial load or new message)
-  useEffect(() => {
-    if (loadMoreMessages && !shouldScrollToBottom.current) {
-      shouldScrollToBottom.current = true; // Reset for next time
-      return;
+  useLayoutEffect(() => {
+    if (shouldScrollToBottom) {
+      scrollToBottom();
     }
-    scrollToBottom();
   }, [chatMessages, isLoadingMore]);
+
+  // Handle scroll adjustment after DOM updates
+  useLayoutEffect(() => {
+    scrollToPreviousPosition();
+  }, [scrollAdjustmentRef, chatMessages]);
 
   // Establish WebSocket connection when user is available
   useEffect(() => {
@@ -125,25 +152,23 @@ const ChatMessages = ({ chatId }) => {
   };
 
   const loadMoreMessages = async () => {
-    if (!nextPageURL.current) return;
+    if (!nextPageURL.current || isLoadingMore) return;
 
     const container = messagesContainerRef.current;
-    const scrollHeightBefore = container.scrollHeight; // Old height
-    const scrollTopBefore = container.scrollTop; // Old scroll position
+    const previousScrollHeight = container.scrollHeight; // Old height
+    const previousScrollTop = container.scrollTop; // Old scroll position
 
     try {
       setIsLoadingMore(true);
-      shouldScrollToBottom.current = false; // Prevent scrolling to bottom
+      setShouldScrollToBottom(false); // Prevent scrolling to bottom
       const response = await api.get(nextPageURL.current);
       const results = await response.data.results;
+
+      // Store scroll adjustment data
+      scrollAdjustmentRef.current = {previousScrollTop, previousScrollHeight};
+
       setChatMessages(prev => [...results, ...prev]);
       nextPageURL.current = response.data.next;
-
-      // After DOM updates, adjust scroll position to maintain view
-      setTimeout(() => {
-        const scrollHeightAfter = container.scrollHeight; // New height
-        container.scrollTop = scrollTopBefore + (scrollHeightAfter - scrollHeightBefore);
-      }, 1.2);
 
     } catch (error) {
       console.error("Error loading more messages:", error); 
@@ -203,10 +228,16 @@ const ChatMessages = ({ chatId }) => {
       </div>
 
       {/* Pagination Area */}
-      <button className="bg-primary-500 text-white px-4 py-2 rounded w-fit mx-auto" onClick={loadMoreMessages}>Load More</button>
+      {/* <button className="bg-primary-500 text-white px-4 py-2 rounded w-fit mx-auto" onClick={loadMoreMessages}>Load More</button> */}
 
       {/* Messages Area */}
       <div ref={messagesContainerRef} className="flex-1 overflow-y-scroll p-4 space-y-4 bg-gradient-to-br from-neutral-bg-200 to-neutral-bg-300 dark:from-dark-bg-200 dark:to-dark-bg-300">
+        <div ref={messagesStartRef} className="w-full h-10"></div>
+        {isLoadingMore && (
+          <div className="text-center mb-2">
+            <div className="w-6 h-6 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          </div>
+        )}
         {chatMessages.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-dark-bg-100 dark:to-dark-bg-200 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -215,7 +246,7 @@ const ChatMessages = ({ chatId }) => {
             <p className="text-text-secondary dark:text-dark-text-secondary">No messages yet. Start the conversation!</p>
           </div>
         ) : (
-          chatMessages.map((msg, index) => {
+          chatMessages.map((msg) => {
             const isOwn = msg.sender === user.id;
 
             return (
