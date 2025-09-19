@@ -16,23 +16,18 @@ const ChatMessages = ({ chatId }) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [chatInfo, setChatInfo] = useState(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);  // For pagination loading state
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);  // To track if we should auto-scroll to bottom
+
   const messagesStartRef = useRef(null);
   const messagesEndRef = useRef(null);
-  const { user } = useUser();
-
-  // Pagination states
-  const [isLoadingMore, setIsLoadingMore] = useState(false);  // For pagination loading state
-  const nextPageURL = useRef(null);
-  
+  const nextPageURL = useRef(null);  // Pagination states
   const messagesContainerRef = useRef(null);
   const scrollAdjustmentRef = useRef({ previousScrollTop: 0, previousScrollHeight: 0 }); // To store previous scroll value {previousPosition, previousHeight}
-
-  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);  // To track if we should auto-scroll to bottom
-  
-  const navigate = useNavigate();
   
   const socketURL = import.meta.env.VITE_SOCKET_URL;
-  
+  const { user } = useUser();
+  const navigate = useNavigate();
   const {
     connect,
     disconnect,
@@ -41,89 +36,8 @@ const ChatMessages = ({ chatId }) => {
     messages,
     setMessages
   } = useWebSocket(`${socketURL}/chats/${chatId}/message/`);
-
-  useEffect(() => {
-    if (loading) return; // Don't set up observer while loading
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isLoadingMore) {
-          loadMoreMessages();
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    if (messagesStartRef.current) {
-      observer.observe(messagesStartRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    }
-  }, [loading, chatMessages, isLoadingMore]);
-
   
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const scrollToPreviousPosition = useCallback(() => {
-    if (scrollAdjustmentRef.current && messagesContainerRef.current && !shouldScrollToBottom) {
-      const { previousScrollTop, previousScrollHeight } = scrollAdjustmentRef.current;
-      const container = messagesContainerRef.current;
-      const newScrollHeight = container.scrollHeight;
-      const heightDiff = newScrollHeight - previousScrollHeight;
-      container.scrollTop = previousScrollTop + heightDiff;
-      scrollAdjustmentRef.current = null; // Reset after adjustment
-
-      setShouldScrollToBottom(true); // Reset for next time
-    }
-  }, [scrollAdjustmentRef, chatMessages])
-
-  // Only scroll to bottom if not loading more messages (i.e., on initial load or new message)
-  useLayoutEffect(() => {
-    if (shouldScrollToBottom) {
-      scrollToBottom();
-    }
-  }, [chatMessages, isLoadingMore]);
-
-  // Handle scroll adjustment after DOM updates
-  useLayoutEffect(() => {
-    scrollToPreviousPosition();
-  }, [scrollAdjustmentRef, chatMessages]);
-
-  // Establish WebSocket connection when user is available
-  useEffect(() => {
-    if (user) {
-      const token = localStorage.getItem(ACCESS_TOKEN);
-      if (token) {
-        connect(token);
-      }
-    }
-
-    return () => {
-      disconnect();
-    };
-  }, [user, connect, disconnect]);
-
-  // Process incoming WebSocket messages
-  useEffect(() => {
-    if (messages.length > 0) {
-      setChatMessages(prev => [...prev, ...messages]);
-      setMessages([]); // Clear messages after processing
-    }
-  }, [messages, chatId]);
-
-  const handleSendMessage = (event) => {
-    event.preventDefault();
-    if (message.trim() && isConnected) {
-      sendMessage(chatId, message.trim())
-      setMessage("");
-    }
-  };
-
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       const response = await api.get(`/chats/${chatId}/messages`);
       const results = await response.data.results;
@@ -137,9 +51,9 @@ const ChatMessages = ({ chatId }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchChatInfo = async () => {
+  }, [chatId, navigate]);
+    
+  const fetchChatInfo = useCallback(async () => {
     try {
       const response = await api.get(`/chats/${chatId}/`);
       setChatInfo(response.data);
@@ -149,9 +63,10 @@ const ChatMessages = ({ chatId }) => {
         navigate("/");
       }
     }
-  };
-
-  const loadMoreMessages = async () => {
+  }, [chatId, navigate]);
+  
+  // Load more messages for pagination
+  const loadMoreMessages = useCallback(async () => {
     if (!nextPageURL.current || isLoadingMore) return;
 
     const container = messagesContainerRef.current;
@@ -175,12 +90,96 @@ const ChatMessages = ({ chatId }) => {
     } finally {
       setIsLoadingMore(false);
     }
-  }
+  }, [isLoadingMore]);
+  
+  // Establish WebSocket connection when user is available
+  useEffect(() => {
+    if (user) {
+      const token = localStorage.getItem(ACCESS_TOKEN);
+      if (token) {
+        connect(token);
+      }
+    }
 
+    return () => {
+      disconnect();
+    };
+  }, [user, connect, disconnect]);
+  
+  // Process incoming WebSocket messages
+  useEffect(() => {
+    if (messages.length > 0) {
+      setChatMessages(prev => [...prev, ...messages]);
+      setMessages([]); // Clear messages after processing
+    }
+  }, [messages]);
+  
+ 
   useEffect(() => {
     fetchChatInfo();
     fetchMessages();
-  }, [chatId]);
+  }, [fetchChatInfo, fetchMessages]);
+
+  // Infinite scroll using IntersectionObserver
+  useEffect(() => {
+    if (loading) return; // Don't set up observer while loading
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isLoadingMore) {
+          loadMoreMessages();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (messagesStartRef.current) {
+      observer.observe(messagesStartRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    }
+  }, [loading, isLoadingMore, loadMoreMessages]);
+
+  // Only scroll to bottom if not loading more messages (i.e., on initial load or new message)
+  // shouldScrollToBottom is set to false when loading more messages
+  useLayoutEffect(() => {
+    if (shouldScrollToBottom && !isLoadingMore) {
+      scrollToBottom();
+    }
+  }, [chatMessages, isLoadingMore, shouldScrollToBottom]);
+
+  // Handle scroll adjustment after DOM updates
+  useLayoutEffect(() => {
+    scrollToPreviousPosition();
+  }, [scrollAdjustmentRef, chatMessages]);
+
+  const handleSendMessage = (event) => {
+    event.preventDefault();
+    if (message.trim() && isConnected) {
+      sendMessage(chatId, message.trim())
+      setMessage("");
+    }
+  };
+  
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToPreviousPosition = useCallback(() => {
+    if (scrollAdjustmentRef.current && messagesContainerRef.current && !shouldScrollToBottom) {
+      const { previousScrollTop, previousScrollHeight } = scrollAdjustmentRef.current;
+      const container = messagesContainerRef.current;
+      const newScrollHeight = container.scrollHeight;
+      const heightDiff = newScrollHeight - previousScrollHeight;
+      container.scrollTop = previousScrollTop + heightDiff;
+      scrollAdjustmentRef.current = null; // Reset after adjustment
+
+      setShouldScrollToBottom(true); // Reset for next time
+    }
+  }, [scrollAdjustmentRef, chatMessages])
+
 
   if (!user) {
     return (
