@@ -12,8 +12,8 @@ import {
 } from "react-icons/io5";
 
 const ChatMessages = ({ chatId }) => {
-  const [chatMessages, setChatMessages] = useState([]);
-  const [message, setMessage] = useState("");
+  const [chatMessages, setChatMessages] = useState([]);  // All chat messages
+  const [message, setMessage] = useState("");  // New message input
   const [loading, setLoading] = useState(true);
   const [chatInfo, setChatInfo] = useState(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);  // For pagination loading state
@@ -34,7 +34,10 @@ const ChatMessages = ({ chatId }) => {
     sendMessage,
     isConnected,
     messages,
-    setMessages
+    setMessages,
+    seenMessageIds,
+    setSeenMessageIds,
+    sendSeenMessageFlag,
   } = useWebSocket(`${socketURL}/chats/${chatId}/message/`);
   
   const fetchMessages = useCallback(async () => {
@@ -113,8 +116,40 @@ const ChatMessages = ({ chatId }) => {
       setMessages([]); // Clear messages after processing
     }
   }, [messages]);
-  
- 
+
+  // Handle sending new message
+  const handleSendMessage = (event) => {
+    event.preventDefault();
+    if (message.trim() && isConnected) {
+      sendMessage(chatId, message.trim())
+      setMessage("");
+    }
+  };
+
+  // Update messages status to "seen" when other participant views them
+  useEffect(() => {
+    if (seenMessageIds.length > 0) {
+      setChatMessages(prevMessages => 
+        prevMessages.map(msg => 
+          seenMessageIds.includes(msg.id) ? { ...msg, status: "seen" } : msg
+        )
+      );
+      setSeenMessageIds([]); // Clear after processing
+    }
+  }, [seenMessageIds]);
+
+  // Mark messages as seen when they come into view
+  useEffect(() => {
+    if (chatMessages.length > 0 && user) {
+      const unseenMessageIds = chatMessages
+            .filter(msg => msg.sender !== user.id && msg.status !== "seen")
+            .map(msg => msg.id);
+      if (unseenMessageIds.length > 0) {
+        sendSeenMessageFlag(chatId, unseenMessageIds);
+      }
+    }
+  }, [chatMessages, user]);
+
   useEffect(() => {
     fetchChatInfo();
     fetchMessages();
@@ -155,13 +190,6 @@ const ChatMessages = ({ chatId }) => {
     scrollToPreviousPosition();
   }, [scrollAdjustmentRef, chatMessages]);
 
-  const handleSendMessage = (event) => {
-    event.preventDefault();
-    if (message.trim() && isConnected) {
-      sendMessage(chatId, message.trim())
-      setMessage("");
-    }
-  };
   
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

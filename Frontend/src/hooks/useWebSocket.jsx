@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 export const useWebSocket = (url) => {
-  const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [seenMessageIds, setSeenMessageIds] = useState([]);
   const socketRef = useRef(null);
 
   const connect = useCallback ((token) => {
@@ -17,7 +17,7 @@ export const useWebSocket = (url) => {
     ws.onopen = () => {
       // console.log("WebSocket connection established");
       setIsConnected(true);
-      setSocket(ws);
+      socketRef.current = ws;
 
       if (token) {
         ws.send(JSON.stringify({
@@ -35,6 +35,9 @@ export const useWebSocket = (url) => {
           ...prev,
           data.message
         ])
+      } else if (data.type === "message_seen") {
+        const { message_ids } = data;
+        setSeenMessageIds(prev => [...prev, ...message_ids]);
       } else if (data.type === "error") {
         disconnect();
       } else if (data.type === "authenticated") {
@@ -46,14 +49,13 @@ export const useWebSocket = (url) => {
     ws.onclose = () => {
       // console.log("WebSocket connection closed");
       setIsConnected(false);
-      setSocket(null);
+      socketRef.current = null;
     };
-
 
     ws.onerror = (error) => {
       // console.error("WebSocket error:", error);
       setIsConnected(false);
-      setSocket(null);
+      socketRef.current = null;
     };
 
     return ws;
@@ -67,7 +69,17 @@ export const useWebSocket = (url) => {
         content: content
       }));
     };
-  }, [])
+  }, []);
+
+  const sendSeenMessageFlag = useCallback((chatId, messageIds) => {
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify({
+        type: "messages_seen",
+        chat_id: chatId,
+        message_ids: messageIds
+      }));
+    }
+  }, []);
 
   const disconnect = useCallback(() => {
     if (socketRef.current) {
@@ -89,6 +101,9 @@ export const useWebSocket = (url) => {
     sendMessage,
     isConnected,
     messages,
-    setMessages
+    setMessages,
+    seenMessageIds,
+    setSeenMessageIds,
+    sendSeenMessageFlag,
   };
 };
