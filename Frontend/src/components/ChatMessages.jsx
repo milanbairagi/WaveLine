@@ -31,13 +31,13 @@ const ChatMessages = ({ chatId }) => {
   const {
     connect,
     disconnect,
-    sendMessage,
+    sendMessage,  // Function to send message
     isConnected,
-    messages,
-    setMessages,
-    seenMessageIds,
-    setSeenMessageIds,
-    sendSeenMessageFlag,
+    messages,  // Incoming messages from WebSocket
+    setMessages,  // Function to set messages (Here to clear after processing)
+    seenMessageIds,  // IDs of messages marked as seen by other participant
+    setSeenMessageIds,  // Function to set seen message IDs (Here to clear after processing)
+    sendSeenMessageFlag,  // Function to send seen message flag
   } = useWebSocket(`${socketURL}/chats/${chatId}/message/`);
   
   const fetchMessages = useCallback(async () => {
