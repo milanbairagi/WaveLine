@@ -18,7 +18,7 @@ const ChatCard = ({ chat }) => {
 
   return (
     <div
-      className="bg-neutral-bg-100 dark:bg-dark-bg-100 border border-neutral-bg-300 dark:border-dark-bg-300 rounded-xl p-4 mb-3 cursor-pointer transition-all duration-200 hover:bg-neutral-bg-200 dark:hover:bg-dark-bg-200 hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-500 group"
+      className="bg-neutral-bg-100 dark:bg-dark-bg-100 border border-neutral-bg-400 dark:border-dark-bg-300 rounded-xl p-4 mb-3 cursor-pointer transition-all duration-200 hover:bg-neutral-bg-200 dark:hover:bg-dark-bg-200 hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-500 group"
       onClick={handleChatClick}
     >
       <div className="flex items-center space-x-4">
@@ -33,8 +33,13 @@ const ChatCard = ({ chat }) => {
             </h3>
             <IoChatbubbleEllipsesOutline className="w-5 h-5 text-text-tertiary dark:text-dark-text-tertiary group-hover:text-primary-500 transition-colors duration-200" />
           </div>
-          <p className="text-sm text-text-secondary dark:text-dark-text-secondary mt-1">
-            {/* Chat with {otherParticipant.username} */}
+          <p className={`text-sm mt-1 truncate
+            ${chat?.last_message?.sender === user.id || 
+              (chat?.last_message?.sender !== user.id && chat?.last_message?.status === 'seen')
+              ? 'font-normal text-red-500'  // seen message style
+              : 'font-semibold text-blue-700'  // unseen message style
+            }`
+          }>
             {chat.last_message
               ? chat.last_message.content
               : "No messages yet. Say hi!"
