@@ -11,6 +11,7 @@ from django.conf import settings
 from chats.models import Chat, Message
 from chats.serializers import MessageSerializer
 
+
 @database_sync_to_async
 def get_user_chat_ids(user):
     return list(Chat.objects.filter(participants=user).values_list('id', flat=True))
@@ -28,6 +29,20 @@ def create_message(chat_id, user, content):
         raise ValueError("Chat does not exist")
     except Exception as e:
         raise ValueError(f"An error occurred while creating the message: {e}")
+    
+@database_sync_to_async
+def get_valid_messages_ids(chat_id, message_ids, receiver_id):
+    """Fetch message IDs that belong to the chat and were not sent by the receiver."""
+    return list(
+        Message.objects.filter(
+            id__in=message_ids,
+            chat__id=chat_id
+        ).exclude(sender__id=receiver_id)
+        .values_list('id', flat=True))
+
+@database_sync_to_async
+def set_messages_seen(chat_id, message_ids):
+    Message.objects.filter(id__in=message_ids, chat__id=chat_id).update(status="seen")
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -111,6 +126,35 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "message_data": message_data,
                 }
             )
+            
+        elif data.get("type") == "messages_seen":
+            if not self.user:
+                await self.send(json.dumps({"type": "error", "detail": "User not authenticated"}))
+                return
+            
+            chat_id = data.get("chat_id")
+            message_ids = data.get("message_ids", [])
+
+            # Check if the user is part of the chat
+            if f"chat_{chat_id}" not in self.joined_chats:
+                await self.send(json.dumps({"type": "error", "detail": "Access denied to chat"}))
+                return
+
+            # Validate message IDs belong to the chat and were not sent by this user
+            valid_message_ids = await get_valid_messages_ids(chat_id, message_ids, self.user.id)
+            
+            # Update message statuses to 'seen'
+            await set_messages_seen(chat_id, valid_message_ids)
+
+            # Notify other participants about the seen status
+            await self.channel_layer.group_send(
+                f"chat_{chat_id}",
+                {
+                    "type": "messages_seen",
+                    "message_ids": valid_message_ids,
+                    "user_id": self.user.id,
+                }
+            )
 
     async def disconnect(self, close_code):
         for chat_id in self.joined_chats:
@@ -128,4 +172,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(json.dumps({
             "type": "chat_message",
             "message": message_data
+        }))
+        
+    async def messages_seen(self, event):
+        message_ids = event["message_ids"]
+        user_id = event["user_id"]
+
+        # Send the seen update to WebSocket
+        await self.send(json.dumps({
+            "type": "messages_seen",
+            "message_ids": message_ids,
+            "user_id": user_id,
         }))

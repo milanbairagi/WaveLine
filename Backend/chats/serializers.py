@@ -13,10 +13,11 @@ class ParticipantsSerializer(serializers.ModelSerializer):
 class ChatSerializer(serializers.ModelSerializer):
     participants = serializers.PrimaryKeyRelatedField(many=True, queryset=User.objects.all(), write_only=True)
     participants_detail = ParticipantsSerializer(many=True, read_only=True, source="participants")
+    last_message = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Chat
-        fields = ["id", "participants", "participants_detail", "created_at", "updated_at"]
+        fields = ["id", "participants", "participants_detail", "created_at", "updated_at", "last_message"]
 
     def to_internal_value(self, data):
         participants = data.get("participants")
@@ -24,6 +25,12 @@ class ChatSerializer(serializers.ModelSerializer):
             user_id = self.context["request"].user.id
             data["participants"] = [user_id, participants]
         return super().to_internal_value(data)
+    
+    def get_last_message(self, obj):
+        last_message = obj.messages.order_by("-timestamp").first()
+        if last_message:
+            return MessageSerializer(last_message).data
+        return None
 
     def validate_participants(self, value):
         if not isinstance(value, list):
@@ -52,6 +59,6 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ["id", "chat", "sender", "content", "timestamp"]
+        fields = ["id", "chat", "sender", "content", "status", "timestamp"]
         read_only_fields = ["id", "chat", "sender", "timestamp"]
 
