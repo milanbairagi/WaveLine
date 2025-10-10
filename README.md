@@ -124,7 +124,7 @@ The frontend will be available at `http://localhost:5173`
 ### Authentication
 - `POST /api/token/` - Login and get JWT tokens
 - `POST /api/token/refresh/` - Refresh access token
-- `GET /api/accounts/user/` - Get current user info
+- `GET /api/accounts/me/` - Get current user info
 - `POST /api/accounts/register/` - Register new user
 
 ### Chats
