@@ -5,6 +5,9 @@ import api from "../api";
 import { useUser } from "../context/userContext";
 import FieldError from "../components/FieldError";
 import { IoPersonOutline, IoLockClosedOutline, IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import { MdMarkChatRead } from "react-icons/md";
+import { FaLock } from "react-icons/fa";
+import { AiFillThunderbolt } from "react-icons/ai";
 import ThemeToggleButton from "../components/buttons/ThemeToggleButton";
 
 const Login = () => {
@@ -209,9 +212,7 @@ const Login = () => {
 							<div className="grid grid-cols-3 gap-4 text-center">
 								<div className="flex flex-col items-center">
 									<div className="w-10 h-10 bg-primary-100 dark:bg-dark-bg-200 rounded-lg flex items-center justify-center mb-2">
-										<span className=" text-sm font-bold">
-											🗨️
-										</span>
+										<MdMarkChatRead className="dark:text-gray-300" />
 									</div>
 									<span className="text-xs text-text-secondary dark:text-dark-text-secondary">
 										Real-time Chat
@@ -220,9 +221,7 @@ const Login = () => {
 
 								<div className="flex flex-col items-center">
 									<div className="w-10 h-10 bg-accent-100 dark:bg-dark-bg-200 rounded-lg flex items-center justify-center mb-2">
-										<span className="text-accent-600 dark:text-accent-400 text-sm font-bold">
-											🔒
-										</span>
+										<FaLock className="dark:text-gray-300" />
 									</div>
 									<span className="text-xs text-text-secondary dark:text-dark-text-secondary">
 										Secure
@@ -231,9 +230,7 @@ const Login = () => {
 
 								<div className="flex flex-col items-center">
 									<div className="w-10 h-10 bg-primary-100 dark:bg-dark-bg-200 rounded-lg flex items-center justify-center mb-2">
-										<span className="text-primary-600 dark:text-primary-400 text-sm font-bold">
-											⚡
-										</span>
+										<AiFillThunderbolt className="dark:text-gray-300" />
 									</div>
 									<span className="text-xs text-text-secondary dark:text-dark-text-secondary">
 										Fast
