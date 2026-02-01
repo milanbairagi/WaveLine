@@ -89,9 +89,9 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-neutral-bg-100 to-neutral-bg-300 dark:from-dark-bg-50 dark:to-dark-bg-100 flex flex-col">
+    <div className="h-dvh bg-gradient-to-br from-neutral-bg-100 to-neutral-bg-300 dark:from-dark-bg-50 dark:to-dark-bg-100 flex flex-col">
       {/* Header */}
-      <div className="bg-neutral-bg-50 dark:bg-dark-bg-100 border-b border-neutral-bg-400 dark:border-dark-bg-300 shadow-sm">
+      <div className={`${chatId ? "hidden sm:block" : "block"}  bg-neutral-bg-50 dark:bg-dark-bg-100 border-b border-neutral-bg-400 dark:border-dark-bg-300 shadow-sm`}>
         <div className="px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Brand & Welcome */}

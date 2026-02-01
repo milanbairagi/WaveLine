@@ -8,7 +8,8 @@ import ChatMessage from "./ChatMessage";
 import Avatar from "./Avatar";
 import { 
   IoSendOutline, 
-  IoChatbubbleEllipsesOutline
+  IoChatbubbleEllipsesOutline,
+  IoArrowBack
 } from "react-icons/io5";
 
 const ChatMessages = ({ chatId }) => {
@@ -237,6 +238,9 @@ const ChatMessages = ({ chatId }) => {
       {/* Chat Header */}
       <div className="bg-neutral-bg-50 dark:bg-dark-bg-100 border-b border-neutral-bg-300 dark:border-dark-bg-300 px-4 py-4">
         <div className="flex items-center space-x-3">
+          <button onClick={() => navigate(-1)} className="sm:hidden p-2 rounded-full hover:bg-neutral-bg-200 dark:hover:bg-dark-bg-200 transition-all duration-200">
+            <IoArrowBack className="w-5 h-5 text-text-primary dark:text-dark-text-primary" />
+          </button>
           {/* Avatar */}
           <Avatar name={otherParticipant?.username} />
           
