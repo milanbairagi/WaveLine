@@ -10,4 +10,4 @@ dj-database-url==3.1.0
 psycopg2-binary==2.9.11
 whitenoise==6.11.0
 django-filter==25.2
-uvcorn==0.40.0
+uvicorn==0.40.0
