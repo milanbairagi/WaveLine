@@ -1,0 +1,128 @@
+name: Bug Report
+description: Report a bug or issue with WaveLine
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please provide as much detail as possible to help us resolve the issue quickly.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which part of the application is affected?
+      options:
+        - Backend (Django/API)
+        - Frontend (React/UI)
+        - WebSocket/Real-time messaging
+        - Authentication
+        - Database
+        - Docker/Deployment
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the bug...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Describe what should have happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Describe what actually happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots/Logs
+      description: If applicable, add screenshots or error logs to help explain your problem.
+      placeholder: Paste screenshots or logs here...
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Where did this bug occur?
+      options:
+        - Development (local)
+        - Production
+        - Docker
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser (if Frontend issue)
+      description: Which browser are you using?
+      placeholder: e.g., Chrome 120, Firefox 121, Safari 17
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: What OS are you running?
+      placeholder: e.g., Windows 11, macOS 14, Ubuntu 22.04
+
+  - type: textarea
+    id: versions
+    attributes:
+      label: Version Information
+      description: Please provide version details
+      placeholder: |
+        - Python version: 
+        - Node.js version: 
+        - Django version: 
+        - React version: 
+      render: markdown
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here.
+      placeholder: Any additional information that might help...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched for similar issues before creating this one
+          required: true
+        - label: I have provided all the information requested above
+          required: true

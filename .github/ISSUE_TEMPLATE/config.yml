@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Questions & Discussions
+    url: https://github.com/milanbairagi/WaveLine/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📚 Documentation
+    url: https://github.com/milanbairagi/WaveLine#readme
+    about: Check out the documentation for setup and usage guides
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/milanbairagi/WaveLine/security/advisories/new
+    about: Report security vulnerabilities privately
