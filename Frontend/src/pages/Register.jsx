@@ -1,5 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 import api from "../api";
 import { useUser } from "../context/userContext";
@@ -7,10 +8,13 @@ import ThemeToggleButton from "../components/buttons/ThemeToggleButton";
 import FieldError from "../components/FieldError";
 import { IoPersonOutline, IoLockClosedOutline, IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { MdMarkChatRead } from "react-icons/md";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
 import { AiFillThunderbolt } from "react-icons/ai";
 
 const Register = () => {
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const navigate = useNavigate();
 	const { loginUser } = useUser();
 
@@ -153,7 +157,7 @@ const Register = () => {
 										<IoLockClosedOutline className="h-5 w-5 text-text-tertiary dark:text-dark-text-tertiary" />
 									</div>
 									<input
-										type="password"
+										type={`${showPassword ? "text" : "password"}`}
 										id="password"
 										name="password"
 										{...register("password", {
@@ -162,6 +166,16 @@ const Register = () => {
 										className={`block w-full pl-12 pr-4 py-3 border border-neutral-bg-300 dark:border-dark-bg-300 rounded-xl bg-neutral-bg-200 dark:bg-dark-bg-200 text-text-primary dark:text-dark-text-primary placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${errors.password ? "border-red-500 dark:border-red-400" : ""}`}
 										placeholder="Enter your password"
 									/>
+                  <div
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash className="h-5 w-5 text-text-tertiary dark:text-dark-text-tertiary" />
+                    ) : (
+                      <FaEye className="h-5 w-5 text-text-tertiary dark:text-dark-text-tertiary" />
+                    )}
+                  </div>
 								</div>
                 {errors.password && (
                   <FieldError msg={errors.password.message} />
@@ -181,7 +195,7 @@ const Register = () => {
 										<IoLockClosedOutline className="h-5 w-5 text-text-tertiary dark:text-dark-text-tertiary" />
 									</div>
 									<input
-										type="password"
+										type={`${showConfirmPassword ? "text" : "password"}`}
 										id="confirm-password"
 										name="confirm-password"
                     {...register("confirmPassword", {
@@ -190,6 +204,16 @@ const Register = () => {
 										className={`block w-full pl-12 pr-4 py-3 border border-neutral-bg-300 dark:border-dark-bg-300 rounded-xl bg-neutral-bg-200 dark:bg-dark-bg-200 text-text-primary dark:text-dark-text-primary placeholder-text-tertiary dark:placeholder-dark-text-tertiary focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${errors.confirmPassword ? "border-red-500 dark:border-red-400" : ""}`}
 										placeholder="Confirm your password"
 									/>
+                  <div
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <FaEyeSlash className="h-5 w-5 text-text-tertiary dark:text-dark-text-tertiary" />
+                    ) : (
+                      <FaEye className="h-5 w-5 text-text-tertiary dark:text-dark-text-tertiary" />
+                    )}
+                  </div>
 								</div>
                 {errors.confirmPassword && (
                   <FieldError msg={errors.confirmPassword.message} />
