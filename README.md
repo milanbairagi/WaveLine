@@ -1,8 +1,8 @@
-# WaveLine 🌊
+# WaveLine
 
 A modern, real-time chat application built with Django (Backend) and React (Frontend) that enables seamless communication through WebSocket connections.
 
-## 🚀 Features
+## Features
 
 - **Real-time Messaging**: WebSocket-powered instant messaging with Django Channels
 - **User Authentication**: JWT-based authentication system with registration and login
@@ -12,7 +12,7 @@ A modern, real-time chat application built with Django (Backend) and React (Fron
 - **Dark/Light Theme**: Toggle between themes for better user experience
 - **Protected Routes**: Secure navigation with authentication guards
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 - **Django 5.2.4** - Web framework
@@ -30,7 +30,7 @@ A modern, real-time chat application built with Django (Backend) and React (Fron
 - **Tailwind CSS** - Utility-first CSS framework
 - **React Icons** - Icon library
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 WaveLine/
@@ -53,7 +53,7 @@ WaveLine/
 └── README.md
 ```
 
-## 🔧 Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 - Python 3.8+
@@ -119,7 +119,7 @@ The backend will be available at `http://127.0.0.1:8000`
 
 The frontend will be available at `http://localhost:5173`
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Authentication
 - `POST /api/token/` - Login and get JWT tokens
@@ -133,7 +133,7 @@ The frontend will be available at `http://localhost:5173`
 - `GET /api/chats/{id}/messages/` - Get chat messages
 - `POST /api/chats/{id}/messages/` - Send message
 
-## 🔌 WebSocket Connection
+## WebSocket Connection
 
 The application uses WebSocket for real-time messaging:
 
@@ -141,7 +141,7 @@ The application uses WebSocket for real-time messaging:
 - **Authentication**: JWT token required
 - **Message Format**: JSON with sender, content, and timestamp
 
-## 🎨 Features Overview
+## Features Overview
 
 ### User Management
 - User registration with username and password
@@ -161,7 +161,7 @@ The application uses WebSocket for real-time messaging:
 - Intuitive navigation
 
 
-## 🔒 Security Features
+## Security Features
 
 - JWT token-based authentication
 - CORS configuration for cross-origin requests
@@ -169,7 +169,7 @@ The application uses WebSocket for real-time messaging:
 - Client-side route protection
 - Secure WebSocket connections
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
@@ -177,17 +177,17 @@ The application uses WebSocket for real-time messaging:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🐛 Known Issues
+## Known Issues
 
 - WebSocket connection may need reconnection handling in production
 - File upload for media messages not yet implemented
 - Group chat functionality is planned for future releases
 
-## 🚀 Future Enhancements
+## Future Enhancements
 
 - [ ] Group chat support
 - [ ] File and media sharing
@@ -196,14 +196,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Push notifications
 - [ ] Message encryption
 - [ ] Voice and video calling
-
-## 👥 Authors
-
-- **Milan Bairagi** - *Initial work* - [milanbairagi](https://github.com/milanbairagi)
-
-## 🙏 Acknowledgments
-
-- Django team for the excellent web framework
-- React team for the powerful UI library
-- Django Channels for WebSocket support
-- Tailwind CSS for the styling framework
