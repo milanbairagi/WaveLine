@@ -127,9 +127,8 @@ DATABASES = {
 # Production Database
 if config("PRODUCTION", default=True, cast=bool):
     DATABASE_URL = config("DATABASE_URL")
-    DATABASES['default'] = dj_database_url.config(default=DATABASE_URL)
-
-
+    assert DATABASE_URL, "DATABASE_URL must be set in production"
+    DATABASES['default'] = dict(dj_database_url.config(default=str(DATABASE_URL)))
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
