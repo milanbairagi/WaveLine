@@ -15,6 +15,7 @@ A modern, real-time chat application built with Django (Backend) and React (Fron
 ## Tech Stack
 
 ### Backend
+
 - **Django 5.2.4** - Web framework
 - **Django REST Framework** - API development
 - **Django Channels** - WebSocket support for real-time communication
@@ -23,6 +24,7 @@ A modern, real-time chat application built with Django (Backend) and React (Fron
 - **SQLite** - Database (development)
 
 ### Frontend
+
 - **React 19.1.0** - UI library
 - **Vite** - Build tool and development server
 - **React Router DOM** - Client-side routing
@@ -56,6 +58,7 @@ WaveLine/
 ## Installation & Setup
 
 ### Prerequisites
+
 - Python 3.8+
 - Node.js 16+
 - npm or yarn
@@ -63,12 +66,14 @@ WaveLine/
 ### Backend Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/milanbairagi/WaveLine.git
    cd WaveLine/Backend
    ```
 
 2. **Create and activate virtual environment**
+
    ```bash
    python -m venv venv
    # On Windows
@@ -77,23 +82,48 @@ WaveLine/
    source venv/bin/activate
    ```
 
-3. **Install dependencies**
+3. Backend Environment (`backend/.env`)
+   Create a `.env` file inside the `backend/` directory:
+
+   ```ini
+   DEBUG=True
+   DJANGO_SECRET_KEY=your-secret-key-here
+
+   PRODUCTION=False
+
+   # Set PRODUCTION=True and DEBUG=False in production environment and update below settings accordingly
+   # Optional fields during development
+   ALLOWED_HOSTS=localhost,127.0.0.1
+   CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+   DATABASE_URL=your_database_url_here (e.g., sqlite:///db.sqlite3 or postgres://user:password@host:port/dbname)
+   REDIS_URL=your_redis_url_here (e.g., redis://localhost:6379/0)
+   ```
+
+   Replace `your-secret-key-here` with a secure random key. Generate one using:
+
+   ```sh
+   python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+   ```
+
+4. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Run migrations**
+5. **Run migrations**
+
    ```bash
-   python manage.py makemigrations
    python manage.py migrate
    ```
 
-5. **Create superuser (optional)**
+6. **Create superuser (optional)**
+
    ```bash
    python manage.py createsuperuser
    ```
 
-6. **Start the development server**
+7. **Start the development server**
    ```bash
    python manage.py runserver
    ```
@@ -103,16 +133,26 @@ The backend will be available at `http://127.0.0.1:8000`
 ### Frontend Setup
 
 1. **Navigate to frontend directory**
+
    ```bash
    cd ../Frontend
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
-3. **Start the development server**
+3. Frontend Environment (`frontend/.env`)
+   Create a `.env` file inside the `frontend/` directory:
+
+   ```ini
+   VITE_API_URL=http://localhost:8000/api
+   VITE_SOCKET_URL=ws://localhost:8000/ws
+   ```
+
+4. **Start the development server**
    ```bash
    npm run dev
    ```
@@ -122,12 +162,14 @@ The frontend will be available at `http://localhost:5173`
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/token/` - Login and get JWT tokens
 - `POST /api/token/refresh/` - Refresh access token
 - `GET /api/accounts/me/` - Get current user info
 - `POST /api/accounts/register/` - Register new user
 
 ### Chats
+
 - `GET /api/chats/` - List user's chats
 - `POST /api/chats/` - Create new chat
 - `GET /api/chats/{id}/messages/` - Get chat messages
@@ -144,22 +186,24 @@ The application uses WebSocket for real-time messaging:
 ## Features Overview
 
 ### User Management
+
 - User registration with username and password
 - JWT-based authentication
 - User profile with optional phone number
 
 ### Chat System
+
 - One-on-one messaging
 - Real-time message delivery
 - Message status tracking
 - Chat history persistence
 
 ### UI/UX
+
 - Clean, modern interface
 - Responsive design for all devices
 - Dark/Light theme toggle
 - Intuitive navigation
-
 
 ## Security Features
 
