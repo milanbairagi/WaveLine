@@ -50,7 +50,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
         self.user = None
         self.joined_chats = set()
-        self.chat_id = self.scope["url_route"]["kwargs"]["chat_id"]
+        self.chat_id = self.scope.get("url_route", {}).get("kwargs", {}).get("chat_id")
 
     async def receive(self, text_data):
         data = json.loads(text_data)
