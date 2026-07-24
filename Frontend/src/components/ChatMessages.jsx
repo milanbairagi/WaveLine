@@ -190,23 +190,6 @@ const ChatMessages = ({ chatId }) => {
     };
   }, [loading, isLoadingMore, loadMoreMessages]);
 
-  // Only scroll to bottom if not loading more messages (i.e., on initial load or new message)
-  // shouldScrollToBottom is set to false when loading more messages
-  useLayoutEffect(() => {
-    if (shouldScrollToBottom && !isLoadingMore) {
-      scrollToBottom();
-    }
-  }, [chatMessages, isLoadingMore, shouldScrollToBottom]);
-
-  // Handle scroll adjustment after DOM updates
-  useLayoutEffect(() => {
-    scrollToPreviousPosition();
-  }, [scrollToPreviousPosition, chatMessages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   const scrollToPreviousPosition = useCallback(() => {
     if (
       scrollAdjustmentRef.current &&
@@ -224,6 +207,23 @@ const ChatMessages = ({ chatId }) => {
       setShouldScrollToBottom(true); // Reset for next time
     }
   }, [scrollAdjustmentRef, shouldScrollToBottom]);
+
+  // Only scroll to bottom if not loading more messages (i.e., on initial load or new message)
+  // shouldScrollToBottom is set to false when loading more messages
+  useLayoutEffect(() => {
+    if (shouldScrollToBottom && !isLoadingMore) {
+      scrollToBottom();
+    }
+  }, [chatMessages, isLoadingMore, shouldScrollToBottom]);
+
+  // Handle scroll adjustment after DOM updates
+  useLayoutEffect(() => {
+    scrollToPreviousPosition();
+  }, [scrollToPreviousPosition, chatMessages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   if (!user) {
     return (
