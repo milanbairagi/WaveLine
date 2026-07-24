@@ -50,9 +50,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
         self.user = None
         self.joined_chats = set()
-        self.chat_id = self.scope.get("url_route", {}).get("kwargs", {}).get("chat_id")
+        # self.chat_id = self.scope.get("url_route", {}).get("kwargs", {}).get("chat_id")
 
     async def receive(self, text_data):
+        print(f"Received data: {text_data}")  # Debugging line
         data = json.loads(text_data)
 
         if data.get("type") == "auth":
@@ -68,14 +69,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 
                 chat_ids = await get_user_chat_ids(self.user)
                 # Check if chat ID is valid
-                if not self.chat_id:
-                    await self.send(json.dumps({"type": "error", "detail": "Chat ID is required"}))
-                    return
+                # if not self.chat_id:
+                #     await self.send(json.dumps({"type": "error", "detail": "Chat ID is required"}))
+                #     return
 
                 # Check if current user is part of the chat
-                if not self.chat_id.isdigit() or int(self.chat_id) not in chat_ids:
-                    await self.send(json.dumps({"type": "error", "detail": "Access denied to chat"}))
-                    return
+                # if not self.chat_id.isdigit() or int(self.chat_id) not in chat_ids:
+                #     await self.send(json.dumps({"type": "error", "detail": "Access denied to chat"}))
+                #     return
                 
                 for chat_id in chat_ids:
                     group_name = f"chat_{chat_id}"
