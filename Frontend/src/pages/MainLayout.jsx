@@ -122,7 +122,26 @@ const MainLayout = () => {
 
       setMessages([]); // Clear messages after processing
     }
-   }, [messages, chatId, setMessages, setChats]);
+  }, [messages, chatId, setMessages, setChats]);
+
+  // Change last_message to seen in chat list when user is in the chat and receives a new message
+  useEffect(() => {
+    if (chatId || wsCurrentChatMessages.length > 0) {
+      setChats((prev) =>
+        prev.map((chat) =>
+          chat.id === parseInt(chatId)
+            ? {
+                ...chat,
+                last_message: {
+                  ...chat.last_message,
+                  status: "seen",
+                }
+              }
+            : chat
+        )
+      );
+    }
+  }, [wsCurrentChatMessages, chatId]);
 
   const updateSearchTerm = (term) => {
     setSearchTerm(term);
