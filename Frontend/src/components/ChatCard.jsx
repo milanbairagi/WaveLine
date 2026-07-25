@@ -42,8 +42,8 @@ const ChatCard = ({ chat }) => {
           </div>
           <p className={`text-sm mt-1 truncate
             ${isLastMessageSeen()
-              ? 'font-normal text-red-500'  // seen message style
-              : 'font-semibold text-blue-700'  // unseen message style
+              ? 'font-normal text-gray-500 dark:text-gray-400'  // seen message style
+              : 'font-semibold text-primary-600 dark:text-primary-400'  // unseen message style
             }`
           }>
             {chat.last_message
