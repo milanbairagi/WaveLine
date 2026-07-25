@@ -8,7 +8,6 @@ import {
 } from "react";
 import api from "../api";
 import { useUser } from "../context/userContext";
-import { useWebSocket } from "../hooks/useWebSocket";
 import { ACCESS_TOKEN } from "../constants";
 import ChatMessage from "./ChatMessage";
 import Avatar from "./Avatar";
@@ -18,7 +17,16 @@ import {
   IoArrowBack,
 } from "react-icons/io5";
 
-const ChatMessages = ({ chatId }) => {
+const ChatMessages = ({ 
+  chatId,
+  sendMessage,
+  isConnected,
+  wsMessages,
+  clearWsMessage,
+  seenMessageIds,
+  setSeenMessageIds,
+  sendSeenMessageFlag,
+ }) => {
   const [chatMessages, setChatMessages] = useState([]); // All chat messages
   const [message, setMessage] = useState(""); // New message input
   const [loading, setLoading] = useState(true);
@@ -35,20 +43,8 @@ const ChatMessages = ({ chatId }) => {
     previousScrollHeight: 0,
   }); // To store previous scroll value {previousPosition, previousHeight}
 
-  const socketURL = import.meta.env.VITE_SOCKET_URL;
   const { user } = useUser();
   const navigate = useNavigate();
-  const {
-    connect,
-    disconnect,
-    sendMessage, // Function to send message
-    isConnected,
-    messages, // Incoming messages from WebSocket
-    setMessages, // Function to set messages (Here to clear after processing)
-    seenMessageIds, // IDs of messages marked as seen by other participant
-    setSeenMessageIds, // Function to set seen message IDs (Here to clear after processing)
-    sendSeenMessageFlag, // Function to send seen message flag
-  } = useWebSocket(`${socketURL}/chats/message/`);
 
   const fetchMessages = useCallback(async () => {
     try {
@@ -108,27 +104,15 @@ const ChatMessages = ({ chatId }) => {
     }
   }, [isLoadingMore]);
 
-  // Establish WebSocket connection when user is available
-  useEffect(() => {
-    if (user) {
-      const token = localStorage.getItem(ACCESS_TOKEN);
-      if (token) {
-        connect(token);
-      }
-    }
 
-    return () => {
-      disconnect();
-    };
-  }, [user, connect, disconnect]);
 
   // Process incoming WebSocket messages
   useEffect(() => {
-    if (messages.length > 0) {
-      setChatMessages((prev) => [...prev, ...messages]);
-      setMessages([]); // Clear messages after processing
+    if (wsMessages.length > 0) {
+      setChatMessages((prev) => [...prev, ...wsMessages]);
+      clearWsMessage(); // Clear messages after processing
     }
-  }, [messages, setMessages]);
+  }, [wsMessages, clearWsMessage]);
 
   // Handle sending new message
   const handleSendMessage = (event) => {
