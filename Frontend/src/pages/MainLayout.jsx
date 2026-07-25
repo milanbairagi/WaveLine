@@ -184,25 +184,33 @@ const MainLayout = () => {
                 </div>
               )}
             </div>
-            
+
             {/* Actions */}
             <div className="relative flex items-center space-x-3">
               {searchDropDownOn && (
-                <ClickAwayListener onClickAway={() => setSearchDropDownOn(false)}>
+                <ClickAwayListener
+                  onClickAway={() => setSearchDropDownOn(false)}
+                >
                   <div className="absolute right-4 top-16">
-                    <SearchListDropDown users={searchedUser} updateSearchTerm={updateSearchTerm} handleClick={handleSelectUser} />
+                    <SearchListDropDown
+                      users={searchedUser}
+                      updateSearchTerm={updateSearchTerm}
+                      handleClick={handleSelectUser}
+                    />
                   </div>
                 </ClickAwayListener>
               )}
-              <NewChatButton handleClick={() => setSearchDropDownOn(!searchDropDownOn)} />
+              <NewChatButton
+                handleClick={() => setSearchDropDownOn(!searchDropDownOn)}
+              />
               <Logout />
               <ThemeToggleButton />
             </div>
           </div>
-          
+
           {/* Mobile Welcome */}
           {/* View only on ChatList Page */}
-          {(user && !chatId) && (
+          {user && !chatId && (
             <div className="sm:hidden mt-4 flex items-center space-x-2 text-text-secondary dark:text-dark-text-secondary">
               <IoPersonOutline className="w-5 h-5" />
               <span>Welcome, {user.username}!</span>
