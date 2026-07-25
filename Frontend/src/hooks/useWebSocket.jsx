@@ -6,6 +6,14 @@ export const useWebSocket = (url) => {
   const [seenMessageIds, setSeenMessageIds] = useState([]);
   const socketRef = useRef(null);
 
+  const disconnect = useCallback(() => {
+    if (socketRef.current) {
+      socketRef.current.close();
+      socketRef.current = null;
+      setIsConnected(false);
+    }
+  }, []);
+
   const connect = useCallback ((token) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
       socketRef.current.close();
@@ -53,13 +61,13 @@ export const useWebSocket = (url) => {
     };
 
     ws.onerror = (error) => {
-      // console.error("WebSocket error:", error);
+      console.error("WebSocket error:", error);
       setIsConnected(false);
       socketRef.current = null;
     };
 
     return ws;
-  }, [url]);
+  }, [url, disconnect]);
 
   const sendMessage = useCallback((chatId, content) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
@@ -78,14 +86,6 @@ export const useWebSocket = (url) => {
         chat_id: chatId,
         message_ids: messageIds
       }));
-    }
-  }, []);
-
-  const disconnect = useCallback(() => {
-    if (socketRef.current) {
-      socketRef.current.close();
-      socketRef.current = null;
-      setIsConnected(false);
     }
   }, []);
 
