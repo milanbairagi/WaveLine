@@ -157,6 +157,28 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
 
+        elif data.get("type") == "call":
+            if not self.user:
+                await self.send(json.dumps({"type": "error", "detail": "User not authenticated"}))
+                return
+                
+            chat_id = data.get("chat_id")
+
+            # Check if the user is part of the chat
+            if f"chat_{chat_id}" not in self.joined_chats:
+                await self.send(json.dumps({"type": "error", "detail": "Access denied to chat"}))
+                return
+
+            # Broadcast the call data to the group
+            await self.channel_layer.group_send(
+                f"chat_{chat_id}",
+                {
+                    "type": "call_signal",
+                    "payload": data,
+                    "sender": self.channel_name,
+                }
+            )
+
     async def disconnect(self, close_code):
         for chat_id in self.joined_chats:
             await self.channel_layer.group_discard(
@@ -185,3 +207,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "message_ids": message_ids,
             "user_id": user_id,
         }))
+
+    async def call_signal(self, event):
+        if event["sender"] == self.channel_name:
+            # Ignore the signal if it's from the same sender
+            return
+        await self.send(text_data=json.dumps(event["payload"]))
