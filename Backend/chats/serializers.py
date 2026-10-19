@@ -45,8 +45,8 @@ class ChatSerializer(serializers.ModelSerializer):
         participants_id = validated_data.pop("participants")
         chat, created = Chat.objects.get_or_create_chat(participants_id[0], participants_id[1])
 
-        if not created:
-            raise serializers.ValidationError("Chat already exists between these users.")
+        # if not created:
+        #     raise serializers.ValidationError("Chat already exists between these users.")
         return chat
     
     def update(self, instance, validated_data):
