@@ -28,9 +28,10 @@ SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
+PRODUCTION = config("PRODUCTION", default=False, cast=bool)
 
 # Production Settings
-if config("PRODUCTION", default=True, cast=bool):
+if PRODUCTION:
     ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1", cast=Csv())
     CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="", cast=Csv())
 else:
@@ -90,7 +91,9 @@ WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
 
 # Redis configuration
-REDIS_URL = config("REDIS_URL", default=None)
+REDIS_URL = config("REDIS_URL", default="", cast=str).strip()
+REDIS_HOST = config("REDIS_HOST", default="127.0.0.1", cast=str)
+REDIS_PORT = config("REDIS_PORT", default=6379, cast=int)
 if REDIS_URL:
     REDIS_CONFIG = {"hosts": [REDIS_URL]}
 else:
@@ -103,15 +106,16 @@ else:
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": REDIS_CONFIG,
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
 
-# Development Channel Layer
-if not config("PRODUCTION", default=True, cast=bool):
-    CHANNEL_LAYERS["default"]["BACKEND"] = "channels.layers.InMemoryChannelLayer"
-    CHANNEL_LAYERS["default"].pop("CONFIG", None)
+# Production Redis configuration
+if PRODUCTION:
+    CHANNEL_LAYERS["default"] = {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": REDIS_CONFIG,
+    }
 
 
 # Database
@@ -125,7 +129,7 @@ DATABASES = {
 }
 
 # Production Database
-if config("PRODUCTION", default=True, cast=bool):
+if PRODUCTION:
     DATABASE_URL = config("DATABASE_URL")
     assert DATABASE_URL, "DATABASE_URL must be set in production"
     DATABASES['default'] = dict(dj_database_url.config(default=str(DATABASE_URL)))
