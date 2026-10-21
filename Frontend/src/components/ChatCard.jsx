@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/userContext";
 import Avatar from "./Avatar";
-import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 
 
 const ChatCard = ({ chat }) => {
@@ -25,7 +24,7 @@ const ChatCard = ({ chat }) => {
 
   return (
     <div
-      className="bg-neutral-bg-100 dark:bg-dark-bg-100 border border-neutral-bg-400 dark:border-dark-bg-300 rounded-xl p-4 mb-3 cursor-pointer transition-all duration-200 hover:bg-neutral-bg-200 dark:hover:bg-dark-bg-200 hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-500 group"
+      className="p-4 mb-3 bg-neutral-bg-100 border border-neutral-bg-400 rounded-xl dark:bg-dark-bg-100 dark:border-dark-bg-300 cursor-pointer transition-all duration-200 hover:bg-neutral-bg-200 dark:hover:bg-dark-bg-200 hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-500 group"
       onClick={handleChatClick}
     >
       <div className="flex items-center space-x-4">
@@ -34,12 +33,9 @@ const ChatCard = ({ chat }) => {
 
         {/* Chat Info */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-text-primary dark:text-dark-text-primary truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
-              {otherParticipant.username}
-            </h3>
-            <IoChatbubbleEllipsesOutline className="w-5 h-5 text-text-tertiary dark:text-dark-text-tertiary group-hover:text-primary-500 transition-colors duration-200" />
-          </div>
+          <h3 className="text-lg font-semibold text-text-primary dark:text-dark-text-primary truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
+            {otherParticipant.username}
+          </h3>
           <p className={`text-sm mt-1 truncate
             ${isLastMessageSeen()
               ? 'font-normal text-gray-500 dark:text-gray-400'  // seen message style

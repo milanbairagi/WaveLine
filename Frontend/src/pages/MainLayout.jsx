@@ -11,7 +11,9 @@ import SearchListDropDown from "../components/SearchListDropDown";
 import ThemeToggleButton from "../components/buttons/ThemeToggleButton";
 import ClickAwayListener from "../components/common/ClickAwayListener";
 import api from "../api";
-import { IoChatbubbleEllipsesOutline, IoPersonOutline } from "react-icons/io5";
+import { IoPersonOutline } from "react-icons/io5";
+import logoWithName from "../assets/logowithname.png";
+import Logo from "../assets/Logo.svg?react";
 
 const MainLayout = () => {
   const { chatId } = useParams();
@@ -175,7 +177,7 @@ const MainLayout = () => {
 
   
   return (
-    <div className="h-dvh bg-gradient-to-br from-neutral-bg-100 to-neutral-bg-300 dark:from-dark-bg-50 dark:to-dark-bg-100 flex flex-col">
+    <div className="flex-col h-dvh bg-gradient-to-br from-neutral-bg-100 to-neutral-bg-300 dark:from-dark-bg-50 dark:to-dark-bg-100 flex">
       {/* <div> */}
       {/*   {isConnected ? "Connected to WebSocket" : "Disconnected from WebSocket"} */}
       {/* </div> */}
@@ -184,20 +186,12 @@ const MainLayout = () => {
         className={`${chatId ? "hidden sm:block" : "block"}  bg-neutral-bg-50 dark:bg-dark-bg-100 border-b border-neutral-bg-400 dark:border-dark-bg-300 shadow-sm`}
       >
         <div className="px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="justify-between flex items-center">
             {/* Brand & Welcome */}
             <div className="flex items-center space-x-4">
-              <div
-                className="flex items-center cursor-pointer"
-                onClick={() => navigate("/")}
-              >
-                <IoChatbubbleEllipsesOutline className="w-8 h-8 text-primary-500 mr-3" />
-                <h1 className="text-2xl font-bold text-text-primary dark:text-dark-text-primary">
-                  WaveLine
-                </h1>
-              </div>
+              <img src={logoWithName} alt="WaveLine" className="w-32 h-auto" />
               {user && (
-                <div className="hidden sm:flex items-center space-x-2 text-text-secondary dark:text-dark-text-secondary">
+                <div className="text-text-secondary hidden sm:flex items-center space-x-2 dark:text-dark-text-secondary">
                   <IoPersonOutline className="w-5 h-5" />
                   <span className="text-lg">Welcome, {user.username}!</span>
                 </div>
@@ -210,7 +204,7 @@ const MainLayout = () => {
                 <ClickAwayListener
                   onClickAway={() => setSearchDropDownOn(false)}
                 >
-                  <div className="absolute right-4 top-16">
+                  <div className="top-16 absolute right-4">
                     <SearchListDropDown
                       users={searchedUser}
                       updateSearchTerm={updateSearchTerm}
@@ -230,7 +224,7 @@ const MainLayout = () => {
           {/* Mobile Welcome */}
           {/* View only on ChatList Page */}
           {user && !chatId && (
-            <div className="sm:hidden mt-4 flex items-center space-x-2 text-text-secondary dark:text-dark-text-secondary">
+            <div className="mt-4 text-text-secondary sm:hidden flex items-center space-x-2 dark:text-dark-text-secondary">
               <IoPersonOutline className="w-5 h-5" />
               <span>Welcome, {user.username}!</span>
             </div>
@@ -239,7 +233,7 @@ const MainLayout = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden flex">
         {/* Sidebar */}
         <aside
           className={`w-full sm:w-80 ${chatId ? "hidden sm:block" : "block"} border-r border-neutral-bg-300 dark:border-dark-bg-300 bg-neutral-bg-50 dark:bg-dark-bg-100 overflow-y-auto`}
@@ -252,12 +246,12 @@ const MainLayout = () => {
           className={`${chatId ? "flex" : "hidden"} sm:flex flex-1 flex-col bg-neutral-bg-200 dark:bg-dark-bg-200`}
         >
           {!chatId ? (
-            <div className="flex-1 flex items-center justify-center">
+            <div className="flex-1 justify-center flex items-center">
               <div className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-dark-bg-200 dark:to-dark-bg-300 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <IoChatbubbleEllipsesOutline className="w-10 h-10 text-primary-500" />
+                <div className="mb-6 w-20 h-20 bg-gradient-to-br rounded-full justify-center mx-auto from-primary-100 to-primary-200 dark:from-dark-bg-200 dark:to-dark-bg-300 flex items-center">
+                  <Logo className="mt-1 w-14 mr-2" />
                 </div>
-                <h3 className="text-xl font-semibold text-text-primary dark:text-dark-text-primary mb-2">
+                <h3 className="mb-2 text-xl font-semibold text-text-primary dark:text-dark-text-primary">
                   Select a chat to start messaging
                 </h3>
                 <p className="text-text-secondary dark:text-dark-text-secondary">

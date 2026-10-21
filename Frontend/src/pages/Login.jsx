@@ -11,6 +11,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
 import { AiFillThunderbolt } from "react-icons/ai";
 import ThemeToggleButton from "../components/buttons/ThemeToggleButton";
+import logowithname_white from "../assets/logowithname-white.png";
+import logowithname from "../assets/logowithname.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -60,7 +62,7 @@ const Login = () => {
       <div className="w-full max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-0 bg-neutral-bg-100 dark:bg-dark-bg-100 rounded-2xl shadow-2xl overflow-hidden border border-neutral-bg-300 dark:border-dark-bg-300">
           {/* Left Panel - Branding */}
-          <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-br from-primary-500 to-primary-700 p-12 relative overflow-hidden">
+          <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-r from-primary-400 to-primary-700 p-12 relative overflow-hidden">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-white"></div>
@@ -69,10 +71,11 @@ const Login = () => {
             </div>
 
             <div className="relative z-10 text-center">
-              <div className="flex items-center justify-center mb-6">
+              <img src={logowithname_white} alt="WaveLine" className="mx-auto mb-4 mr-2" />
+              {/* <div className="flex items-center justify-center mb-6">
                 <IoChatbubbleEllipsesOutline className="w-16 h-16 text-white mr-4" />
                 <h1 className="text-5xl font-bold text-white">WaveLine</h1>
-              </div>
+              </div> */}
               <p className="text-xl text-primary-100 mb-8 leading-relaxed">
                 Connect, Chat, and Share moments with friends and family in
                 real-time
@@ -86,15 +89,16 @@ const Login = () => {
           </div>
 
           {/* Right Panel - Login Form */}
-          <div className="p-8 lg:p-12 flex flex-col justify-center">
+          <div className="p-4 sm:p-8 lg:p-12 flex flex-col justify-center">
             {/* Mobile Header */}
             <div className="lg:hidden text-center mb-8">
-              <div className="flex items-center justify-center mb-4">
+              <img src={logowithname} alt="WaveLine" className="mx-auto my-4" />
+              {/* <div className="flex items-center justify-center mb-4">
                 <IoChatbubbleEllipsesOutline className="w-12 h-12 text-primary-500 mr-3" />
                 <h1 className="text-3xl font-bold text-text-primary dark:text-dark-text-primary">
                   WaveLine
                 </h1>
-              </div>
+              </div> */}
               <p className="text-text-secondary dark:text-dark-text-secondary">
                 Welcome back! Sign in to continue
               </p>
@@ -217,8 +221,8 @@ const Login = () => {
             {/* Features */}
             <div className="mt-8 pt-8 border-t border-neutral-bg-300 dark:border-dark-bg-300">
               <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 bg-primary-100 dark:bg-dark-bg-200 rounded-lg flex items-center justify-center mb-2">
+                <div className="flex-col flex items-center">
+                  <div className="mb-2 w-10 h-10 bg-primary-100 rounded-lg justify-center dark:bg-dark-bg-200 flex items-center">
                     <MdMarkChatRead className="dark:text-gray-300" />
                   </div>
                   <span className="text-xs text-text-secondary dark:text-dark-text-secondary">
@@ -226,8 +230,8 @@ const Login = () => {
                   </span>
                 </div>
 
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 bg-accent-100 dark:bg-dark-bg-200 rounded-lg flex items-center justify-center mb-2">
+                <div className="flex-col flex items-center">
+                  <div className="mb-2 w-10 h-10 bg-accent-100 rounded-lg justify-center dark:bg-dark-bg-200 flex items-center">
                     <FaLock className="dark:text-gray-300" />
                   </div>
                   <span className="text-xs text-text-secondary dark:text-dark-text-secondary">
@@ -235,8 +239,8 @@ const Login = () => {
                   </span>
                 </div>
 
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 bg-primary-100 dark:bg-dark-bg-200 rounded-lg flex items-center justify-center mb-2">
+                <div className="flex-col flex items-center">
+                  <div className="mb-2 w-10 h-10 bg-primary-100 rounded-lg justify-center dark:bg-dark-bg-200 flex items-center">
                     <AiFillThunderbolt className="dark:text-gray-300" />
                   </div>
                   <span className="text-xs text-text-secondary dark:text-dark-text-secondary">
